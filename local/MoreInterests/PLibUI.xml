@@ -1,0 +1,3683 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PLibUI</name>
+    </assembly>
+    <members>
+        <member name="T:PeterHan.PLib.UI.IDynamicSizable">
+            <summary>
+            A UI component which can be dynamically resized for its content.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.IDynamicSizable.DynamicSize">
+            <summary>
+            Whether the component should dynamically resize for its content. This adds more
+            components and more layout depth, so should only be enabled if necessary.
+            
+            Defaults to false. Must be set to true for components with a nonzero flex size.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.ImageTransform">
+            <summary>
+            An enumeration describing how to transform the image in a label.
+            
+            Rotations are counterclockwise from 0 (straight up).
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.ISettableFlexSize">
+            <summary>
+            Describes a UI component whose flexible size can be mutated.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.ISettableFlexSize.flexibleWidth">
+            <summary>
+            The flexible width of the completed layout group can be set.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.ISettableFlexSize.flexibleHeight">
+            <summary>
+            The flexible height of the completed layout group can be set.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.ITooltipListableOption.GetToolTipText">
+            <summary>
+            Retrieves the tool tip text for this option.
+            </summary>
+            <returns>The text to be shown on the tool tip.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.UI.IUIComponent">
+            <summary>
+            Implemented by PLib UI components.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.IUIComponent.Name">
+            <summary>
+            The component name.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.IUIComponent.Build">
+            <summary>
+            Creates a physical game object embodying this component.
+            </summary>
+            <returns>The game object representing this UI component. Multiple invocations return
+            unique objects.</returns>
+        </member>
+        <member name="E:PeterHan.PLib.UI.IUIComponent.OnRealize">
+            <summary>
+            Actions invoked when the UI component is actually realized.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.LayoutSizes">
+            <summary>
+            A class representing the size sets of a particular component.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.LayoutSizes.flexible">
+            <summary>
+            The flexible dimension value.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.LayoutSizes.ignore">
+            <summary>
+            If true, this component should be ignored completely.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.LayoutSizes.min">
+            <summary>
+            The minimum dimension value.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.LayoutSizes.preferred">
+            <summary>
+            The preferred dimension value.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.LayoutSizes.source">
+            <summary>
+            The source of these values.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.LayoutSizes.Add(PeterHan.PLib.UI.LayoutSizes)">
+            <summary>
+            Adds another set of layout sizes to this one.
+            </summary>
+            <param name="other">The size values to add.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.LayoutSizes.Max(PeterHan.PLib.UI.LayoutSizes)">
+            <summary>
+            Enlarges this layout size, if necessary, using the values from another.
+            </summary>
+            <param name="other">The minimum size values to enforce.</param>
+        </member>
+        <member name="T:PeterHan.PLib.UI.Layouts.AbstractLayoutGroup">
+            <summary>
+            The abstract parent of most layout groups.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.AbstractLayoutGroup.DelayedSetDirty(UnityEngine.RectTransform)">
+            <summary>
+            Sets an object's layout dirty on the next frame.
+            </summary>
+            <param name="transform">The transform to set dirty.</param>
+            <returns>A coroutine to set it dirty.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.AbstractLayoutGroup.DestroyAndReplaceLayout(UnityEngine.GameObject)">
+            <summary>
+            Removes and destroys any PLib layouts on the component. They will be replaced with
+            a static LayoutElement containing the old size of the component.
+            </summary>
+            <param name="component">The component to cleanse.</param>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.AbstractLayoutGroup.flexibleWidth">
+            <summary>
+            The flexible width of the completed layout group can be set.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.AbstractLayoutGroup.flexibleHeight">
+            <summary>
+            The flexible height of the completed layout group can be set.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.AbstractLayoutGroup.layoutPriority">
+            <summary>
+            The priority of this layout group.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.Layouts.AbstractLayoutGroup.locked">
+            <summary>
+            Whether the layout is currently locked.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.Layouts.AbstractLayoutGroup.cachedTransform">
+            <summary>
+            The cached rect transform to speed up layout.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.AbstractLayoutGroup.LockLayout">
+            <summary>
+            Triggers a layout with the current parent, and then locks the layout size. Further
+            attempts to automatically lay out the component, unless UnlockLayout is called,
+            will not trigger any action.
+            
+            The resulting layout has very good performance, but cannot adapt to changes in the
+            size of its children or its own size.
+            </summary>
+            <returns>The computed size of this component when locked.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.AbstractLayoutGroup.SetDirty">
+            <summary>
+            Sets this layout as dirty.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.AbstractLayoutGroup.UnlockLayout">
+            <summary>
+            Unlocks the layout, allowing it to again dynamically resize when component sizes
+            are changed.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.Layouts.BoxLayoutResults">
+            <summary>
+            A class which stores the results of a single box layout calculation pass.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.Layouts.BoxLayoutResults.children">
+            <summary>
+            The components which were laid out.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.Layouts.BoxLayoutResults.direction">
+            <summary>
+            The current direction of flow.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.Layouts.BoxLayoutResults.haveMinSpace">
+            <summary>
+            Whether any spaces have been added yet for minimum size.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.Layouts.BoxLayoutResults.havePrefSpace">
+            <summary>
+            Whether any spaces have been added yet for preferred size.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.Layouts.BoxLayoutResults.total">
+            <summary>
+            The total sizes.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.BoxLayoutResults.Accum(PeterHan.PLib.UI.LayoutSizes,System.Single)">
+            <summary>
+            Accumulates another component into the results.
+            </summary>
+            <param name="sizes">The size of the component to add.</param>
+            <param name="spacing">The component spacing.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.BoxLayoutResults.Expand(PeterHan.PLib.UI.LayoutSizes)">
+            <summary>
+            Expands the results around another component.
+            </summary>
+            <param name="sizes">The size of the component to expand to.</param>
+        </member>
+        <member name="T:PeterHan.PLib.UI.Layouts.BoxLayoutStatus">
+            <summary>
+            Maintains the status of a layout in progress.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.Layouts.BoxLayoutStatus.direction">
+            <summary>
+            The current direction of flow.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.Layouts.BoxLayoutStatus.edge">
+            <summary>
+            The edge from where layout started.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.Layouts.BoxLayoutStatus.offset">
+            <summary>
+            The next component's offset.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.Layouts.BoxLayoutStatus.size">
+            <summary>
+            The component size in that direction minus margins.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.Layouts.CardLayoutResults">
+            <summary>
+            A class which stores the results of a single card layout calculation pass.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.Layouts.CardLayoutResults.children">
+            <summary>
+            The components which were laid out.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.Layouts.CardLayoutResults.direction">
+            <summary>
+            The current direction of flow.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.Layouts.CardLayoutResults.total">
+            <summary>
+            The total sizes.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.CardLayoutResults.Expand(PeterHan.PLib.UI.LayoutSizes)">
+            <summary>
+            Expands the results around another component.
+            </summary>
+            <param name="sizes">The size of the component to expand to.</param>
+        </member>
+        <member name="T:PeterHan.PLib.UI.Layouts.GridLayoutResults">
+            <summary>
+            A class which stores the results of a single grid layout calculation pass.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.GridLayoutResults.GetMatrix(System.Int32,System.Int32,System.Collections.Generic.ICollection{PeterHan.PLib.UI.Layouts.SizedGridComponent})">
+            <summary>
+            Builds a matrix of the components at each given location. Components only are
+            entered at their origin cell (ignoring row and column span).
+            </summary>
+            <param name="rows">The maximum number of rows.</param>
+            <param name="columns">The maximum number of columns.</param>
+            <param name="components">The components to add.</param>
+            <returns>A 2-D array of the components at a given row/column location.</returns>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.GridLayoutResults.ColumnSpecs">
+            <summary>
+            The columns in the grid.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.GridLayoutResults.Components">
+            <summary>
+            The components in the grid, in order of addition.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.GridLayoutResults.Columns">
+            <summary>
+            The number of columns in the grid.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.GridLayoutResults.ComputedColumnSpecs">
+            <summary>
+            The columns in the grid with their calculated widths.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.GridLayoutResults.ComputedRowSpecs">
+            <summary>
+            The rows in the grid with their calculated heights.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.GridLayoutResults.MinHeight">
+            <summary>
+            The minimum total height.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.GridLayoutResults.MinWidth">
+            <summary>
+            The minimum total width.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.GridLayoutResults.Matrix">
+            <summary>
+            The components which were laid out.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.GridLayoutResults.RowSpecs">
+            <summary>
+            The rows in the grid.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.GridLayoutResults.Rows">
+            <summary>
+            The number of rows in the grid.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.GridLayoutResults.TotalFlexHeight">
+            <summary>
+            The total flexible height weights.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.GridLayoutResults.TotalFlexWidth">
+            <summary>
+            The total flexible width weights.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.GridLayoutResults.CalcBaseHeights">
+            <summary>
+            Calculates the base height of each row, the minimum it gets before extra space
+            is distributed.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.GridLayoutResults.CalcBaseWidths">
+            <summary>
+            Calculates the base width of each row, the minimum it gets before extra space
+            is distributed.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.GridLayoutResults.ExpandMultiColumn(PeterHan.PLib.UI.Layouts.SizedGridComponent)">
+            <summary>
+            For a multicolumn component, ratiometrically splits up any excess preferred size
+            among the columns in its span that have a flexible width.
+            </summary>
+            <param name="component">The component to reallocate sizes.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.GridLayoutResults.ExpandMultiRow(PeterHan.PLib.UI.Layouts.SizedGridComponent)">
+            <summary>
+            For a multirow component, ratiometrically splits up any excess preferred size
+            among the rows in its span that have a flexible height.
+            </summary>
+            <param name="component">The component to reallocate sizes.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.GridLayoutResults.PreferredHeightAt(System.Int32,System.Int32)">
+            <summary>
+            Retrieves the preferred height of a cell.
+            </summary>
+            <param name="row">The cell's row.</param>
+            <param name="column">The cell's column.</param>
+            <returns>The preferred height.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.GridLayoutResults.PreferredWidthAt(System.Int32,System.Int32)">
+            <summary>
+            Retrieves the preferred width of a cell.
+            </summary>
+            <param name="row">The cell's row.</param>
+            <param name="column">The cell's column.</param>
+            <returns>The preferred width.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.UI.Layouts.SizedGridComponent">
+            <summary>
+            A component in the grid with its sizes computed.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.SizedGridComponent.HorizontalSize">
+            <summary>
+            The object and its computed horizontal sizes.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.SizedGridComponent.VerticalSize">
+            <summary>
+            The object and its computed vertical sizes.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.Layouts.RelativeLayoutParams">
+            <summary>
+            Stores constraints applied to a game object in a relative layout.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase`1">
+            <summary>
+            Stores constraints applied to an object in a relative layout.
+            </summary>
+            <typeparam name="T">The type of the target object.</typeparam>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase`1.BottomEdge">
+            <summary>
+            The anchored position of the bottom edge.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase`1.Insets">
+            <summary>
+            The insets. If null, insets are all zero.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase`1.LeftEdge">
+            <summary>
+            The anchored position of the left edge.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase`1.OverrideSize">
+            <summary>
+            Overrides the size of the component if set.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase`1.RightEdge">
+            <summary>
+            The anchored position of the right edge.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase`1.TopEdge">
+            <summary>
+            The anchored position of the top edge.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase`1.EdgeStatus">
+            <summary>
+            The edge position determined for a component.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase`1.EdgeStatus.Constraint">
+            <summary>
+            The type of constraint to use for this relative layout.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase`1.EdgeStatus.FromAnchor">
+            <summary>
+            The anchor position in the component that sets the relative anchor.
+            
+            0.0f is the bottom/left, 1.0f is the top/right.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase`1.EdgeStatus.FromComponent">
+            <summary>
+            The component to which this edge is anchored.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase`1.EdgeStatus.Offset">
+            <summary>
+            The offset in pixels from the anchor. + is upwards/rightwards, - is downwards/
+            leftwards.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase`1.EdgeStatus.Locked">
+            <summary>
+            True if the position has been locked down in the code.
+            Locked should only be set by the layout manager, crashes may occur otherwise.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase`1.EdgeStatus.Unconstrained">
+            <summary>
+            True if the position is not constrained to anything.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase`1.EdgeStatus.CopyFrom(PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase{`0}.EdgeStatus)">
+            <summary>
+            Copies data from another edge status object.
+            </summary>
+            <param name="other">The object to copy.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase`1.EdgeStatus.Reset">
+            <summary>
+            Resets these offsets to unlocked.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.Layouts.RelativeConstraintType">
+            <summary>
+            The types of constraints which can be applied to components in a relative layout.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.Layouts.RelativeLayoutResults">
+            <summary>
+            Parameters used to store the dynamic data of an object during a relative layout.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.Layouts.RelativeLayoutResults.ZERO">
+            <summary>
+            A set of insets that are always zero.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.RelativeLayoutResults.BottomParams">
+            <summary>
+            The instance parameters of the bottom edge's component.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.RelativeLayoutResults.EffectiveHeight">
+            <summary>
+            The height of the component plus its margin box.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.RelativeLayoutResults.EffectiveWidth">
+            <summary>
+            The width of the component plus its margin box.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.RelativeLayoutResults.LeftParams">
+            <summary>
+            The instance parameters of the left edge's component.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.RelativeLayoutResults.PreferredHeight">
+            <summary>
+            The preferred height at which this component will be laid out, unless both
+            edges are constrained.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.RelativeLayoutResults.PreferredWidth">
+            <summary>
+            The preferred width at which this component will be laid out, unless both
+            edges are constrained.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.RelativeLayoutResults.RightParams">
+            <summary>
+            The instance parameters of the right edge's component.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.RelativeLayoutResults.TopParams">
+            <summary>
+            The instance parameters of the top edge's component.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.RelativeLayoutResults.Transform">
+            <summary>
+            The object to lay out.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.RelativeLayoutResults.UseSizeDeltaX">
+            <summary>
+            Whether the size delta should be used in the X direction (as opposed to offsets).
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.Layouts.RelativeLayoutResults.UseSizeDeltaY">
+            <summary>
+            Whether the size delta should be used in the Y direction (as opposed to offsets).
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.Layouts.RelativeLayoutResults.prefSize">
+            <summary>
+            The preferred size of this component.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.Layouts.RelativeLayoutUtil">
+            <summary>
+            A helper class for RelativeLayout.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.RelativeLayoutUtil.CalcX(System.Collections.Generic.ICollection{PeterHan.PLib.UI.Layouts.RelativeLayoutResults},UnityEngine.RectTransform,System.Collections.Generic.IDictionary{UnityEngine.GameObject,PeterHan.PLib.UI.Layouts.RelativeLayoutParams})">
+            <summary>
+            Initializes and computes horizontal sizes for the components in this relative
+            layout.
+            </summary>
+            <param name="children">The location to store information about these components.</param>
+            <param name="all">The components to lay out.</param>
+            <param name="constraints">The constraints defined for these components.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.RelativeLayoutUtil.CalcY(System.Collections.Generic.ICollection{PeterHan.PLib.UI.Layouts.RelativeLayoutResults})">
+            <summary>
+            Computes vertical sizes for the components in this relative layout.
+            </summary>
+            <param name="children">The location to store information about these components.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.RelativeLayoutUtil.ElbowRoom(PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase{UnityEngine.GameObject}.EdgeStatus,PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase{UnityEngine.GameObject}.EdgeStatus,System.Single)">
+            <summary>
+            Calculates the minimum size the component must be to support a specific child
+            component.
+            </summary>
+            <param name="min">The lower edge constraint.</param>
+            <param name="max">The upper edge constraint.</param>
+            <param name="effective">The component size in that dimension plus margins.</param>
+            <returns>The minimum parent component size to fit the child.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.RelativeLayoutUtil.ExecuteX(System.Collections.Generic.IEnumerable{PeterHan.PLib.UI.Layouts.RelativeLayoutResults},System.Collections.Generic.List{UnityEngine.UI.ILayoutController},System.Single,System.Single)">
+            <summary>
+            Executes the horizontal layout.
+            </summary>
+            <param name="children">The components to lay out.</param>
+            <param name="scratch">The location where components will be temporarily stored.</param>
+            <param name="mLeft">The left margin.</param>
+            <param name="mRight">The right margin.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.RelativeLayoutUtil.ExecuteY(System.Collections.Generic.IEnumerable{PeterHan.PLib.UI.Layouts.RelativeLayoutResults},System.Collections.Generic.List{UnityEngine.UI.ILayoutController},System.Single,System.Single)">
+            <summary>
+            Executes the vertical layout.
+            </summary>
+            <param name="children">The components to lay out.</param>
+            <param name="scratch">The location where components will be temporarily stored.</param>
+            <param name="mBottom">The bottom margin.</param>
+            <param name="mTop">The top margin.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.RelativeLayoutUtil.GetMinSizeX(System.Collections.Generic.IEnumerable{PeterHan.PLib.UI.Layouts.RelativeLayoutResults})">
+            <summary>
+            Calculates the minimum size in the X direction.
+            </summary>
+            <param name="children">The components to lay out.</param>
+            <returns>The minimum horizontal size.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.RelativeLayoutUtil.GetMinSizeY(System.Collections.Generic.IEnumerable{PeterHan.PLib.UI.Layouts.RelativeLayoutResults})">
+            <summary>
+            Calculates the minimum size in the Y direction.
+            </summary>
+            <param name="children">The components to lay out.</param>
+            <returns>The minimum vertical size.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.RelativeLayoutUtil.InitResolve(PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase{UnityEngine.GameObject}.EdgeStatus,System.Collections.Generic.IDictionary{UnityEngine.GameObject,PeterHan.PLib.UI.Layouts.RelativeLayoutResults})">
+            <summary>
+            Resolves a component reference if needed.
+            </summary>
+            <param name="edge">The edge to resolve.</param>
+            <param name="lookup">The location where the component can be looked up.</param>
+            <returns>The linked parameters for that edge if needed.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.RelativeLayoutUtil.LockEdgeAnchor(PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase{UnityEngine.GameObject}.EdgeStatus,PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase{UnityEngine.GameObject}.EdgeStatus)">
+            <summary>
+            Locks both edges if they are constrained to the same anchor.
+            </summary>
+            <param name="edge">The edge to check.</param>
+            <param name="otherEdge">The other edge to check.</param>
+            <returns>true if it was able to lock, or false otherwise.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.RelativeLayoutUtil.LockEdgeAnchor(PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase{UnityEngine.GameObject}.EdgeStatus)">
+            <summary>
+            Locks an edge if it is constrained to an anchor.
+            </summary>
+            <param name="edge">The edge to check.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.RelativeLayoutUtil.LockEdgeComponent(PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase{UnityEngine.GameObject}.EdgeStatus,PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase{UnityEngine.GameObject}.EdgeStatus)">
+            <summary>
+            Locks an edge if it can be determined from another component.
+            </summary>
+            <param name="edge">The edge to check.</param>
+            <param name="offset">The component's offset in that direction.</param>
+            <param name="otherEdge">The opposing edge of the referenced component.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.RelativeLayoutUtil.LockEdgeRelative(PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase{UnityEngine.GameObject}.EdgeStatus,System.Single,PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase{UnityEngine.GameObject}.EdgeStatus)">
+            <summary>
+            Locks an edge if it can be determined from the other edge.
+            </summary>
+            <param name="edge">The edge to check.</param>
+            <param name="size">The component's effective size in that direction.</param>
+            <param name="opposing">The component's other edge.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.RelativeLayoutUtil.RunPassX(System.Collections.Generic.IEnumerable{PeterHan.PLib.UI.Layouts.RelativeLayoutResults})">
+            <summary>
+            Runs a layout pass in the X direction, resolving edges that can be resolved.
+            </summary>
+            <param name="children">The children to resolve.</param>
+            <returns>true if all children have all X edges constrained, or false otherwise.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.RelativeLayoutUtil.RunPassY(System.Collections.Generic.IEnumerable{PeterHan.PLib.UI.Layouts.RelativeLayoutResults})">
+            <summary>
+            Runs a layout pass in the Y direction, resolving edges that can be resolved.
+            </summary>
+            <param name="children">The children to resolve.</param>
+            <returns>true if all children have all Y edges constrained, or false otherwise.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.Layouts.RelativeLayoutUtil.ThrowUnresolvable(System.Collections.Generic.IEnumerable{PeterHan.PLib.UI.Layouts.RelativeLayoutResults},System.Int32,PeterHan.PLib.UI.PanelDirection)">
+            <summary>
+            Throws an error when resolution fails.
+            </summary>
+            <param name="children">The children, some of which failed to resolve.</param>
+            <param name="limit">The number of passes executed before failing.</param>
+            <param name="direction">The direction that failed.</param>
+        </member>
+        <member name="T:PeterHan.PLib.UI.BoxLayoutGroup">
+            <summary>
+            A freezable, flexible layout manager that fixes the issues I am having with
+            HorizontalLayoutGroup and VerticalLayoutGroup. You get a content size fitter for
+            free too!
+            
+            Intended to work something like Java's BoxLayout...
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.BoxLayoutGroup.Calc(UnityEngine.GameObject,PeterHan.PLib.UI.BoxLayoutParams,PeterHan.PLib.UI.PanelDirection)">
+            <summary>
+            Calculates the size of the box layout container.
+            </summary>
+            <param name="obj">The container to lay out.</param>
+            <param name="args">The parameters to use for layout.</param>
+            <param name="direction">The direction which is being calculated.</param>
+            <returns>The minimum and preferred box layout size.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.BoxLayoutGroup.DoLayout(PeterHan.PLib.UI.BoxLayoutParams,PeterHan.PLib.UI.Layouts.BoxLayoutResults,System.Single)">
+            <summary>
+            Lays out components in the box layout container.
+            </summary>
+            <param name="args">The parameters to use for layout.</param>
+            <param name="required">The calculated minimum and preferred sizes.</param>
+            <param name="size">The total available size in this dimension.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.BoxLayoutGroup.DoLayoutLinear(PeterHan.PLib.UI.Layouts.BoxLayoutResults,PeterHan.PLib.UI.BoxLayoutParams,PeterHan.PLib.UI.Layouts.BoxLayoutStatus)">
+            <summary>
+            Lays out components in the box layout container parallel to the layout axis.
+            </summary>
+            <param name="required">The calculated minimum and preferred sizes.</param>
+            <param name="args">The parameters to use for layout.</param>
+            <param name="status">The current status of layout.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.BoxLayoutGroup.DoLayoutPerp(PeterHan.PLib.UI.Layouts.BoxLayoutResults,PeterHan.PLib.UI.BoxLayoutParams,PeterHan.PLib.UI.Layouts.BoxLayoutStatus)">
+            <summary>
+            Lays out components in the box layout container against the layout axis.
+            </summary>
+            <param name="required">The calculated minimum and preferred sizes.</param>
+            <param name="args">The parameters to use for layout.</param>
+            <param name="status">The current status of layout.</param>
+        </member>
+        <member name="P:PeterHan.PLib.UI.BoxLayoutGroup.Params">
+            <summary>
+            The parameters used to set up this box layout.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.BoxLayoutGroup.horizontal">
+            <summary>
+            Results from the horizontal calculation pass.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.BoxLayoutGroup.parameters">
+            <summary>
+            The parameters used to set up this box layout.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.BoxLayoutGroup.vertical">
+            <summary>
+            Results from the vertical calculation pass.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.BoxLayoutParams">
+            <summary>
+            The parameters used for laying out a box layout.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.BoxLayoutParams.Alignment">
+            <summary>
+            The alignment to use for components that are not big enough to fit and have no
+            flexible width.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.BoxLayoutParams.Direction">
+            <summary>
+            The direction of layout.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.BoxLayoutParams.Margin">
+            <summary>
+            The margin between the children and the component edge.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.BoxLayoutParams.Spacing">
+            <summary>
+            The spacing between components.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.CardLayoutGroup">
+            <summary>
+            A freezable layout manager that displays one of its contained objects at a time.
+            Unlike other layout groups, even inactive children are considered for sizing.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.CardLayoutGroup.Calc(UnityEngine.GameObject,PeterHan.PLib.UI.PanelDirection)">
+            <summary>
+            Calculates the size of the card layout container.
+            </summary>
+            <param name="obj">The container to lay out.</param>
+            <param name="args">The parameters to use for layout.</param>
+            <param name="direction">The direction which is being calculated.</param>
+            <returns>The minimum and preferred box layout size.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.CardLayoutGroup.DoLayout(UnityEngine.RectOffset,PeterHan.PLib.UI.Layouts.CardLayoutResults,System.Single)">
+            <summary>
+            Lays out components in the card layout container.
+            </summary>
+            <param name="margin">The margin to allow around the components.</param>
+            <param name="required">The calculated minimum and preferred sizes.</param>
+            <param name="size">The total available size in this dimension.</param>
+        </member>
+        <member name="P:PeterHan.PLib.UI.CardLayoutGroup.Margin">
+            <summary>
+            The margin around the components as a whole.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.CardLayoutGroup.horizontal">
+            <summary>
+            Results from the horizontal calculation pass.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.CardLayoutGroup.margin">
+            <summary>
+            The margin around the components as a whole.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.CardLayoutGroup.vertical">
+            <summary>
+            Results from the vertical calculation pass.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.CardLayoutGroup.SetActiveCard(UnityEngine.GameObject)">
+            <summary>
+            Switches the active card.
+            </summary>
+            <param name="card">The child to make active, or null to inactivate all children.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.CardLayoutGroup.SetActiveCard(System.Int32)">
+            <summary>
+            Switches the active card.
+            </summary>
+            <param name="index">The child index to make active, or -1 to inactivate all children.</param>
+        </member>
+        <member name="T:PeterHan.PLib.UI.GridComponent`1">
+            <summary>
+            A component in the grid with its placement information.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.GridComponent`1.Item">
+            <summary>
+            The object to place here.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.GridComponentSpec">
+            <summary>
+            Stores the state of a component in a grid layout.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.GridComponentSpec.Alignment">
+            <summary>
+            The alignment of the component.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.GridComponentSpec.Column">
+            <summary>
+            The column of the component.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.GridComponentSpec.ColumnSpan">
+            <summary>
+            The number of columns this component spans.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.GridComponentSpec.Margin">
+            <summary>
+            The margin to allocate around each component.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.GridComponentSpec.Row">
+            <summary>
+            The row of the component.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.GridComponentSpec.RowSpan">
+            <summary>
+            The number of rows this component spans.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.GridComponentSpec.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Creates a new grid component specification. While the row and column are mandatory,
+            the other attributes can be optionally specified in the initializer.
+            </summary>
+            <param name="row">The row to place the component.</param>
+            <param name="column">The column to place the component.</param>
+        </member>
+        <member name="T:PeterHan.PLib.UI.GridColumnSpec">
+            <summary>
+            The specifications for one column in a grid layout.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.GridColumnSpec.FlexWidth">
+            <summary>
+            The flexible width of this grid column. If there is space left after all
+            columns get their nominal width, each column will get a fraction of the space
+            left proportional to their FlexWidth value as a ratio to the total flexible
+            width values.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.GridColumnSpec.Width">
+            <summary>
+            The nominal width of this grid column. If zero, the preferred width of the
+            largest component is used. If there are no components in this column (possibly
+            because the only components in this row all have column spans from other
+            columns), the width will be zero!
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.GridColumnSpec.#ctor(System.Single,System.Single)">
+            <summary>
+            Creates a new grid column specification.
+            </summary>
+            <param name="width">The column's base width, or 0 to auto-size the column to the
+            preferred width of its largest component.</param>
+            <param name="flex">The percentage of the leftover width the column should occupy.</param>
+        </member>
+        <member name="T:PeterHan.PLib.UI.GridRowSpec">
+            <summary>
+            The specifications for one row in a grid layout.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.GridRowSpec.FlexHeight">
+            <summary>
+            The flexible height of this grid row. If there is space left after all rows
+            get their nominal height, each row will get a fraction of the space left
+            proportional to their FlexHeight value as a ratio to the total flexible
+            height values.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.GridRowSpec.Height">
+            <summary>
+            The nominal height of this grid row. If zero, the preferred height of the
+            largest component is used. If there are no components in this row (possibly
+            because the only components in this row all have row spans from other rows),
+            the height will be zero!
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.GridRowSpec.#ctor(System.Single,System.Single)">
+            <summary>
+            Creates a new grid row specification.
+            </summary>
+            <param name="height">The row's base width, or 0 to auto-size the row to the
+            preferred height of its largest component.</param>
+            <param name="flex">The percentage of the leftover height the row should occupy.</param>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PGridLayoutGroup">
+            <summary>
+            Implements a flexible version of the base GridLayout.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PGridLayoutGroup.GetColumnWidths(PeterHan.PLib.UI.Layouts.GridLayoutResults,System.Single,UnityEngine.RectOffset)">
+            <summary>
+            Calculates all column widths.
+            </summary>
+            <param name="results">The results from layout.</param>
+            <param name="width">The current container width.</param>
+            <param name="margin">The margins within the borders.</param>
+            <returns>The column widths.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PGridLayoutGroup.GetRowHeights(PeterHan.PLib.UI.Layouts.GridLayoutResults,System.Single,UnityEngine.RectOffset)">
+            <summary>
+            Calculates all row heights.
+            </summary>
+            <param name="results">The results from layout.</param>
+            <param name="height">The current container height.</param>
+            <param name="margin">The margins within the borders.</param>
+            <returns>The row heights.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PGridLayoutGroup.SetFinalHeight(PeterHan.PLib.UI.Layouts.SizedGridComponent,System.Single[])">
+            <summary>
+            Calculates the final height of this component and applies it to the component.
+            </summary>
+            <param name="component">The component to calculate.</param>
+            <param name="rowY">The row locations from GetRowHeights.</param>
+            <returns>true if the height was applied, or false if the component was not laid out
+            due to being disposed or set to ignore layout.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PGridLayoutGroup.SetFinalWidth(PeterHan.PLib.UI.Layouts.SizedGridComponent,System.Single[])">
+            <summary>
+            Calculates the final width of this component and applies it to the component.
+            </summary>
+            <param name="component">The component to calculate.</param>
+            <param name="colX">The column locations from GetColumnWidths.</param>
+            <returns>true if the width was applied, or false if the component was not laid out
+            due to being disposed or set to ignore layout.</returns>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PGridLayoutGroup.Margin">
+            <summary>
+            The margin around the components as a whole.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PGridLayoutGroup.children">
+            <summary>
+            The children of this panel.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PGridLayoutGroup.columns">
+            <summary>
+            The columns in this panel.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PGridLayoutGroup.margin">
+            <summary>
+            The margin around the components as a whole.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PGridLayoutGroup.results">
+            <summary>
+            The current layout status.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PGridLayoutGroup.rows">
+            <summary>
+            The rows in this panel.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PGridLayoutGroup.AddColumn(PeterHan.PLib.UI.GridColumnSpec)">
+            <summary>
+            Adds a column to this grid layout.
+            </summary>
+            <param name="column">The specification for that column.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PGridLayoutGroup.AddComponent(UnityEngine.GameObject,PeterHan.PLib.UI.GridComponentSpec)">
+            <summary>
+            Adds a component to this layout. Components added through other means to the
+            transform will not be laid out at all!
+            </summary>
+            <param name="child">The child to add.</param>
+            <param name="spec">The location where the child will be placed.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PGridLayoutGroup.AddRow(PeterHan.PLib.UI.GridRowSpec)">
+            <summary>
+            Adds a row to this grid layout.
+            </summary>
+            <param name="row">The specification for that row.</param>
+        </member>
+        <member name="T:PeterHan.PLib.UI.RelativeLayoutGroup">
+            <summary>
+            A layout group based on the constraints defined in RelativeLayout. Allows the same
+            fast relative positioning that RelativeLayout does, but can respond to changes in the
+            size of its containing components.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.RelativeLayoutGroup.Margin">
+            <summary>
+            The margin added around all components in the layout. This is in addition to any
+            margins around the components.
+            
+            Note that this margin is not taken into account with percentage based anchors.
+            Items anchored to the extremes will always work fine. Items anchored in the middle
+            will use the middle <b>before</b> margins are effective.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.RelativeLayoutGroup.locConstraints">
+            <summary>
+            Constraints for each object are stored here.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.RelativeLayoutGroup.serialConstraints">
+            <summary>
+            The serialized constraints.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.RelativeLayoutGroup.margin">
+            <summary>
+            The margin around the components as a whole.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.RelativeLayoutGroup.results">
+            <summary>
+            The results of the layout in progress.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.RelativeLayoutGroup.AddOrGet(UnityEngine.GameObject)">
+            <summary>
+            Retrieves the parameters for a child game object. Creates an entry if none exists
+            for this component.
+            </summary>
+            <param name="item">The item to look up.</param>
+            <returns>The parameters for that object.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.RelativeLayoutGroup.Import(System.Collections.Generic.IDictionary{UnityEngine.GameObject,PeterHan.PLib.UI.Layouts.RelativeLayoutParams})">
+            <summary>
+            Imports the data from RelativeLayout for compatibility.
+            </summary>
+            <param name="values">The raw data to import.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.RelativeLayoutGroup.SetEdge(PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase{UnityEngine.GameObject}.EdgeStatus,System.Single,UnityEngine.GameObject)">
+            <summary>
+            Sets a component's edge constraint.
+            </summary>
+            <param name="edge">The edge to set.</param>
+            <param name="fraction">The fraction of the parent to anchor.</param>
+            <param name="child">The other component to anchor.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.RelativeLayoutGroup.SetRaw(UnityEngine.GameObject,PeterHan.PLib.UI.Layouts.RelativeLayoutParams)">
+            <summary>
+            Sets all layout parameters of an object at once.
+            </summary>
+            <param name="item">The item to configure.</param>
+            <param name="rawParams">The raw parameters to use.</param>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PButton">
+            <summary>
+            A custom UI button factory class.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PButton.BUTTON_MARGIN">
+            <summary>
+            The default margins around a button.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PButton.SetupButton(KButton,KImage)">
+            <summary>
+            Sets up the button to have the right sound and background image.
+            </summary>
+            <param name="button">The button to set up.</param>
+            <param name="bgImage">The background image.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PButton.SetupButtonBackground(KImage)">
+            <summary>
+            Sets up the background image to have the right sprite and slice type.
+            </summary>
+            <param name="bgImage">The image that forms the button background.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PButton.SetButtonEnabled(UnityEngine.GameObject,System.Boolean)">
+            <summary>
+            Enables or disables a realized button.
+            </summary>
+            <param name="obj">The realized button object.</param>
+            <param name="enabled">true to make it enabled, or false to make it disabled (greyed out).</param>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PButton.Color">
+            <summary>
+            The button's background color.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PButton.OnClick">
+            <summary>
+            The action to trigger on click. It is passed the realized source object.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PButton.AddOnRealize(PeterHan.PLib.UI.PUIDelegates.OnRealize)">
+            <summary>
+            Adds a handler when this button is realized.
+            </summary>
+            <param name="onRealize">The handler to invoke on realization.</param>
+            <returns>This button for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PButton.SetImageLeftArrow">
+            <summary>
+            Sets the sprite to a leftward facing arrow. Beware the size, scale the button down!
+            </summary>
+            <returns>This button for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PButton.SetImageRightArrow">
+            <summary>
+            Sets the sprite to a rightward facing arrow. Beware the size, scale the button
+            down!
+            </summary>
+            <returns>This button for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PButton.SetKleiPinkStyle">
+            <summary>
+            Sets the default Klei pink button style as this button's color and text style.
+            </summary>
+            <returns>This button for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PButton.SetKleiBlueStyle">
+            <summary>
+            Sets the default Klei blue button style as this button's color and text style.
+            </summary>
+            <returns>This button for call chaining.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PCheckBox">
+            <summary>
+            A custom UI button check box factory class.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PCheckBox.CHECKBOX_MARGIN">
+            <summary>
+            The border size between the checkbox border and icon.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PCheckBox.STATE_UNCHECKED">
+            <summary>
+            The unchecked state.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PCheckBox.STATE_CHECKED">
+            <summary>
+            The checked state.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PCheckBox.STATE_PARTIAL">
+            <summary>
+            The partially checked state.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PCheckBox.GenerateStates(ColorStyleSetting)">
+            <summary>
+            Generates the checkbox image states.
+            </summary>
+            <param name="imageColor">The color style for the checked icon.</param>
+            <returns>The states for this checkbox.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PCheckBox.GetCheckState(UnityEngine.GameObject)">
+            <summary>
+            Gets a realized check box's state.
+            </summary>
+            <param name="realized">The realized check box.</param>
+            <returns>The check box state.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PCheckBox.SetCheckState(UnityEngine.GameObject,System.Int32)">
+            <summary>
+            Sets a realized check box's state.
+            </summary>
+            <param name="realized">The realized check box.</param>
+            <param name="state">The new state to set.</param>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PCheckBox.CheckColor">
+            <summary>
+            The check box color.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PCheckBox.BackColor">
+            <summary>
+            The check box's background color.
+            
+            Unlike other components, this color applies only to the check box itself.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PCheckBox.CheckSize">
+            <summary>
+            The size to scale the check box. If 0x0, it will not be scaled.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PCheckBox.ComponentBackColor">
+            <summary>
+            The background color of everything that is not the check box.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PCheckBox.InitialState">
+            <summary>
+            The initial check box state.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PCheckBox.OnChecked">
+            <summary>
+            The action to trigger on click. It is passed the realized source object.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PCheckBox.AddOnRealize(PeterHan.PLib.UI.PUIDelegates.OnRealize)">
+            <summary>
+            Adds a handler when this check box is realized.
+            </summary>
+            <param name="onRealize">The handler to invoke on realization.</param>
+            <returns>This check box for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PCheckBox.CreateCheckImage(UnityEngine.GameObject,ColorStyleSetting,UnityEngine.Vector2@)">
+            <summary>
+            Creates the actual image that shows the checkbox graphically.
+            </summary>
+            <param name="checkbox">The parent object to add the image.</param>
+            <param name="color">The color style for the box border.</param>
+            <param name="actualSize">The actual check mark size, which will be updated if it
+            is 0x0 to the default size.</param>
+            <returns>The image reference to the checkmark image itself.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PCheckBox.SetKleiPinkStyle">
+            <summary>
+            Sets the default Klei pink button style as this check box's color and text style.
+            </summary>
+            <returns>This check box for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PCheckBox.SetKleiBlueStyle">
+            <summary>
+            Sets the default Klei blue button style as this check box's color and text style.
+            </summary>
+            <returns>This check box for call chaining.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PComboBox`1">
+            <summary>
+            A custom UI combo box factory class.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PComboBox`1.DEFAULT_ITEM_MARGIN">
+            <summary>
+            The default margin around items in the pulldown.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PComboBox`1.SetSelectedItem(UnityEngine.GameObject,IListableOption,System.Boolean)">
+            <summary>
+            Sets the selected option in a realized combo box.
+            </summary>
+            <param name="realized">The realized combo box.</param>
+            <param name="option">The option to set.</param>
+            <param name="fireListener">true to fire the on select listener, or false otherwise.</param>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PComboBox`1.ArrowSize">
+            <summary>
+            The size of the sprite used to expand/contract the options.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PComboBox`1.BackColor">
+            <summary>
+            The combo box's background color.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PComboBox`1.CheckSize">
+            <summary>
+            The size of the check mark sprite used on the selected option.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PComboBox`1.Content">
+            <summary>
+            The content of this combo box.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PComboBox`1.EntryColor">
+            <summary>
+            The background color for each entry in the combo box pulldown.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PComboBox`1.FlexSize">
+            <summary>
+            The flexible size bounds of this combo box.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PComboBox`1.InitialItem">
+            <summary>
+            The initially selected item of the combo box.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PComboBox`1.ItemMargin">
+            <summary>
+            The margin around each item in the pulldown.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PComboBox`1.Margin">
+            <summary>
+            The margin around the component.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PComboBox`1.MaxRowsShown">
+            <summary>
+            The maximum number of items to be shown at once before a scroll bar is added.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PComboBox`1.MinWidth">
+            <summary>
+            The minimum width in units (not characters!) of this text field.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PComboBox`1.OnOptionSelected">
+            <summary>
+            The action to trigger when an item is selected. It is passed the realized source
+            object.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PComboBox`1.TextAlignment">
+            <summary>
+            The text alignment in the combo box.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PComboBox`1.TextStyle">
+            <summary>
+            The combo box's text color, font, word wrap settings, and font size.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PComboBox`1.ToolTip">
+            <summary>
+            The tool tip text.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PComboBox`1.AddOnRealize(PeterHan.PLib.UI.PUIDelegates.OnRealize)">
+            <summary>
+            Adds a handler when this combo box is realized.
+            </summary>
+            <param name="onRealize">The handler to invoke on realization.</param>
+            <returns>This combo box for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PComboBox`1.BuildRowPrefab(TextStyleSetting,ColorStyleSetting)">
+            <summary>
+            Builds a row selection prefab object for this combo box.
+            </summary>
+            <param name="style">The text style for the entries.</param>
+            <param name="entryColor">The color for the entry backgrounds.</param>
+            <returns>A template for each row in the dropdown.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PComboBox`1.SetKleiPinkStyle">
+            <summary>
+            Sets the default Klei pink button style as this combo box's foreground color and text style.
+            </summary>
+            <returns>This combo box for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PComboBox`1.SetKleiBlueStyle">
+            <summary>
+            Sets the default Klei blue button style as this combo box's foreground color and text style.
+            </summary>
+            <returns>This combo box for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PComboBox`1.SetMinWidthInCharacters(System.Int32)">
+            <summary>
+            Sets the minimum (and preferred) width of this combo box in characters.
+            
+            The width is computed using the currently selected text style.
+            </summary>
+            <param name="chars">The number of characters to be displayed.</param>
+            <returns>This combo box for call chaining.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PComboBoxComponent">
+            <summary>
+            An improved variant of DropDown/Dropdown.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PComboBoxComponent.ContentContainer">
+            <summary>
+            The container where the combo box items will be placed.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PComboBoxComponent.CheckColor">
+            <summary>
+            The color for the checkbox if it is selected.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PComboBoxComponent.EntryPrefab">
+            <summary>
+            The prefab used to display each row.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PComboBoxComponent.MaxRowsShown">
+            <summary>
+            The maximum number of rows to be shown.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PComboBoxComponent.OnSelectionChanged">
+            <summary>
+            Called when an item is selected.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PComboBoxComponent.Pulldown">
+            <summary>
+            The object which contains the pull down section of the combo box.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PComboBoxComponent.SelectedLabel">
+            <summary>
+            The selected label.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PComboBoxComponent.currentItems">
+            <summary>
+            The items which are currently shown in this combo box.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PComboBoxComponent.handler">
+            <summary>
+            The currently active mouse event handler, or null if not yet configured.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PComboBoxComponent.open">
+            <summary>
+            Whether the combo box is expanded.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PComboBoxComponent.Close">
+            <summary>
+            Closes the pulldown. The selected choice is not saved.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PComboBoxComponent.OnClick">
+            <summary>
+            Triggered when the combo box is clicked.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PComboBoxComponent.Open">
+            <summary>
+            Opens the pulldown.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PComboBoxComponent.SetItems(System.Collections.Generic.IEnumerable{IListableOption})">
+            <summary>
+            Sets the items which will be shown in this combo box.
+            </summary>
+            <param name="items">The items to show.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PComboBoxComponent.SetSelectedItem(IListableOption,System.Boolean)">
+            <summary>
+            Sets the selected item in the combo box.
+            </summary>
+            <param name="option">The option that was chosen.</param>
+            <param name="fireListener">true to also fire the option selected listener, or false otherwise.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PComboBoxComponent.Update">
+            <summary>
+            Called each frame by Unity, checks to see if the user clicks/scrolls outside of
+            the dropdown while open, and closes it if so.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PComboBoxComponent.ComboBoxItem">
+            <summary>
+            The items in a combo box, paired with the game object owning that row and the
+            object that goes there.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PComboBoxComponent.MouseEventHandler">
+            <summary>
+            Handles mouse events on the pulldown.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PComboBoxComponent.MouseEventHandler.IsOver">
+            <summary>
+            Whether the mouse is over this component.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PContainer">
+            <summary>
+            The abstract parent of PLib UI objects that are meant to contain other UI objects.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PContainer.BackColor">
+            <summary>
+            The background color of this panel.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PContainer.BackImage">
+            <summary>
+            The background image of this panel. Tinted by the background color, acts as all
+            white if left null.
+            
+            Note that the default background color is transparent, so unless it is set to
+            some other color this image will be invisible!
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PContainer.FlexSize">
+            <summary>
+            The flexible size bounds of this component.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PContainer.ImageMode">
+            <summary>
+            The mode to use when displaying the background image.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PContainer.Margin">
+            <summary>
+            The margin left around the contained components in pixels. If null, no margin will
+            be used.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PContainer.InvokeRealize(UnityEngine.GameObject)">
+            <summary>
+            Invokes the OnRealize event.
+            </summary>
+            <param name="obj">The realized text component.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PContainer.SetImage(UnityEngine.GameObject)">
+            <summary>
+            Configures the background color and/or image for this panel.
+            </summary>
+            <param name="panel">The realized panel object.</param>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PDialog">
+            <summary>
+            A dialog root for UI components.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PDialog.BUTTON_MARGIN">
+            <summary>
+            The margin around dialog buttons.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PDialog.CLOSE_ICON_MARGIN">
+            <summary>
+            The margin inside the dialog close button.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PDialog.CLOSE_ICON_SIZE">
+            <summary>
+            The size of the dialog close button's icon.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PDialog.DIALOG_KEY_CLOSE">
+            <summary>
+            The dialog key returned if the user closes the dialog with [ESC] or the X.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PDialog.GetParentObject">
+            <summary>
+            Returns a suitable parent object for a dialog.
+            </summary>
+            <returns>A game object that can be used as a dialog parent depending on the game
+            stage, or null if none is available.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PDialog.RoundUpSize(System.Single,System.Single)">
+            <summary>
+            Rounds the size up to the nearest even integer.
+            </summary>
+            <param name="size">The current size.</param>
+            <param name="maxSize">The maximum allowed size.</param>
+            <returns>The rounded size.</returns>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PDialog.Body">
+            <summary>
+            The dialog body panel. To add custom components to the dialog, use AddChild on
+            this panel. Its direction, margin, and spacing can also be customized.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PDialog.DialogBackColor">
+            <summary>
+            The background color of the dialog itself (including button panel).
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PDialog.MaxSize">
+            <summary>
+            The dialog's maximum size. If the dialog preferred size is bigger than this size,
+            the dialog will be decreased in size to fit. If either axis is zero, the dialog
+            gets its preferred size in that axis, at least the value in Size.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PDialog.Parent">
+            <summary>
+            The dialog's parent.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PDialog.RoundToNearestEven">
+            <summary>
+            If a dialog with an odd width/height is displayed, all offsets will end up on a
+            half pixel offset, which may cause unusual display artifacts as Banker's Rounding
+            will round values that are supposed to be 1.0 units apart into integer values 2
+            units apart. If set, this flag will cause Build to round the dialog's size up to
+            the nearest even integer. If the dialog is already at its maximum size and is still
+            an odd integer in size, it is rounded down one instead.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PDialog.Size">
+            <summary>
+            The dialog's minimum size. If the dialog preferred size is bigger than this size,
+            the dialog will be increased in size to fit. If either axis is zero, the dialog
+            gets its preferred size in that axis, up until the value in MaxSize.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PDialog.SortKey">
+            <summary>
+            The dialog sort order which determines which other dialogs this one is on top of.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PDialog.Title">
+            <summary>
+            The dialog's title.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PDialog.buttons">
+            <summary>
+            The allowable button choices for the dialog.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PDialog.DialogClosed">
+            <summary>
+            The events to invoke when the dialog is closed.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PDialog.AddButton(System.String,System.String,System.String)">
+            <summary>
+            Adds a button to the dialog. The button will use a blue background with white text
+            in the default UI font, except for the last button which will be pink.
+            </summary>
+            <param name="key">The key to report if this button is selected.</param>
+            <param name="text">The button text.</param>
+            <param name="tooltip">The tooltip to display on the button (optional)</param>
+            <returns>This dialog for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PDialog.AddButton(System.String,System.String,System.String,ColorStyleSetting,TextStyleSetting)">
+            <summary>
+            Adds a button to the dialog.
+            </summary>
+            <param name="key">The key to report if this button is selected.</param>
+            <param name="text">The button text.</param>
+            <param name="tooltip">The tooltip to display on the button (optional)</param>
+            <param name="backColor">The background color to use for the button. If null or
+            omitted, the last button will be pink and all others will be blue.</param>
+            <param name="foreColor">The foreground color to use for the button. If null or
+            omitted, white text with the default game UI font will be used.</param>
+            <returns>This dialog for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PDialog.AddOnRealize(PeterHan.PLib.UI.PUIDelegates.OnRealize)">
+            <summary>
+            Adds a handler when this dialog is realized.
+            </summary>
+            <param name="onRealize">The handler to invoke on realization.</param>
+            <returns>This dialog for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PDialog.CreateUserButtons(PeterHan.PLib.UI.PGridLayoutGroup,PeterHan.PLib.UI.PUIDelegates.OnButtonPressed)">
+            <summary>
+            Creates the user buttons.
+            </summary>
+            <param name="layout">The location to add the buttons.</param>
+            <param name="onPressed">The handler to call when any button is pressed.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PDialog.LayoutTitle(PeterHan.PLib.UI.PGridLayoutGroup,PeterHan.PLib.UI.PUIDelegates.OnButtonPressed)">
+            <summary>
+            Lays out the dialog title bar and close button.
+            </summary>
+            <param name="layout">The layout manager for the dialog.</param>
+            <param name="onClose">The action to invoke when close is pressed.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PDialog.SetDialogSize(UnityEngine.GameObject)">
+            <summary>
+            Sets the final size of the dialog using its current position.
+            </summary>
+            <param name="dialog">The realized dialog with all components populated.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PDialog.Show">
+            <summary>
+            Builds and shows this dialog.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PDialog.DialogButton">
+            <summary>
+            Stores information about a dialog button in this dialog.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PDialog.DialogButton.backColor">
+            <summary>
+            The color to use when displaying the button. If null, the default color will
+            be used.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PDialog.DialogButton.key">
+            <summary>
+            The button key used to indicate that it was selected.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PDialog.DialogButton.text">
+            <summary>
+            The text to display for the button.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PDialog.DialogButton.textColor">
+            <summary>
+            The color to use when displaying the button text. If null, the default color
+            will be used.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PDialog.DialogButton.tooltip">
+            <summary>
+            The tooltip for this button.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PDialog.PDialogComp">
+            <summary>
+            The Klei component which backs the dialog.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PDialog.PDialogComp.dialog">
+            <summary>
+            The events to invoke when the dialog is closed.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PDialog.PDialogComp.key">
+            <summary>
+            The key selected by the user.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PDialog.PDialogComp.sortKey">
+            <summary>
+            The sort order of this dialog.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PDialog.PDialogComp.DoButton(UnityEngine.GameObject)">
+            <summary>
+            A delegate which closes the dialog on prompt.
+            </summary>
+            <param name="source">The button source.</param>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PGridPanel">
+            <summary>
+            A panel which lays out its components using grid-type constraints.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PGridPanel.Columns">
+            <summary>
+            The number of columns currently defined.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PGridPanel.Rows">
+            <summary>
+            The number of rows currently defined.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PGridPanel.children">
+            <summary>
+            The children of this panel.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PGridPanel.columns">
+            <summary>
+            The columns in this panel.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PGridPanel.rows">
+            <summary>
+            The rows in this panel.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PGridPanel.AddChild(PeterHan.PLib.UI.IUIComponent,PeterHan.PLib.UI.GridComponentSpec)">
+            <summary>
+            Adds a child to this panel.
+            </summary>
+            <param name="child">The child to add.</param>
+            <param name="spec">The location where the child will be placed.</param>
+            <returns>This panel for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PGridPanel.AddColumn(PeterHan.PLib.UI.GridColumnSpec)">
+            <summary>
+            Adds a column to this panel.
+            </summary>
+            <param name="column">The specification for that column.</param>
+            <returns>This panel for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PGridPanel.AddOnRealize(PeterHan.PLib.UI.PUIDelegates.OnRealize)">
+            <summary>
+            Adds a handler when this panel is realized.
+            </summary>
+            <param name="onRealize">The handler to invoke on realization.</param>
+            <returns>This panel for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PGridPanel.AddRow(PeterHan.PLib.UI.GridRowSpec)">
+            <summary>
+            Adds a row to this panel.
+            </summary>
+            <param name="row">The specification for that row.</param>
+            <returns>This panel for call chaining.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PLabel">
+            <summary>
+            A custom UI label factory class.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PLabel.BackColor">
+            <summary>
+            The label's background color.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PLabel.AddOnRealize(PeterHan.PLib.UI.PUIDelegates.OnRealize)">
+            <summary>
+            Adds a handler when this label is realized.
+            </summary>
+            <param name="onRealize">The handler to invoke on realization.</param>
+            <returns>This label for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PLabel.SetKleiBlueColor">
+            <summary>
+            Sets the background color to the default Klei dialog blue.
+            </summary>
+            <returns>This label for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PLabel.SetKleiPinkColor">
+            <summary>
+            Sets the background color to the Klei dialog header pink.
+            </summary>
+            <returns>This label for call chaining.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PPanel">
+            <summary>
+            A custom UI panel factory which can arrange its children horizontally or vertically.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PPanel.Alignment">
+            <summary>
+            The alignment position to use for child elements if they are smaller than the
+            required size.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PPanel.Direction">
+            <summary>
+            The direction in which components will be laid out.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PPanel.Spacing">
+            <summary>
+            The spacing between components in pixels.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PPanel.children">
+            <summary>
+            The children of this panel.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PPanel.AddChild(PeterHan.PLib.UI.IUIComponent)">
+            <summary>
+            Adds a child to this panel.
+            </summary>
+            <param name="child">The child to add.</param>
+            <returns>This panel for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PPanel.AddOnRealize(PeterHan.PLib.UI.PUIDelegates.OnRealize)">
+            <summary>
+            Adds a handler when this panel is realized.
+            </summary>
+            <param name="onRealize">The handler to invoke on realization.</param>
+            <returns>This panel for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PPanel.Build(UnityEngine.Vector2,System.Boolean)">
+            <summary>
+            Builds this panel.
+            </summary>
+            <param name="size">The fixed size to use if dynamic is false.</param>
+            <param name="dynamic">Whether to use dynamic sizing.</param>
+            <returns>The realized panel.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PPanel.BuildWithFixedSize(UnityEngine.Vector2)">
+            <summary>
+            Builds this panel with a given default size.
+            </summary>
+            <param name="size">The fixed size to use.</param>
+            <returns>The realized panel.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PPanel.RemoveChild(PeterHan.PLib.UI.IUIComponent)">
+            <summary>
+            Removes a child from this panel.
+            </summary>
+            <param name="child">The child to remove.</param>
+            <returns>This panel for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PPanel.SetKleiBlueColor">
+            <summary>
+            Sets the background color to the default Klei dialog blue.
+            </summary>
+            <returns>This panel for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PPanel.SetKleiPinkColor">
+            <summary>
+            Sets the background color to the Klei dialog header pink.
+            </summary>
+            <returns>This panel for call chaining.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PanelDirection">
+            <summary>
+            The direction in which PPanel lays out components.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PRelativePanel">
+            <summary>
+            A panel which lays out its components using relative constraints.
+            
+            This layout manager is the fastest of all panels when laid out, especially since it
+            can function properly when frozen even on dynamically sized items. However, it is also
+            the most difficult to set up and cannot handle all layouts.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PRelativePanel.constraints">
+            <summary>
+            Constraints for each object are stored here.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PRelativePanel.AddChild(PeterHan.PLib.UI.IUIComponent)">
+            <summary>
+            Adds a child to this panel. Children must be added to the panel before they are
+            referenced in a constraint.
+            </summary>
+            <param name="child">The child to add.</param>
+            <returns>This panel for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PRelativePanel.AddOnRealize(PeterHan.PLib.UI.PUIDelegates.OnRealize)">
+            <summary>
+            Adds a handler when this panel is realized.
+            </summary>
+            <param name="onRealize">The handler to invoke on realization.</param>
+            <returns>This panel for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PRelativePanel.AnchorXAxis(PeterHan.PLib.UI.IUIComponent,System.Single)">
+            <summary>
+            Anchors the component's pivot in the X axis to the specified anchor position.
+            The component will be laid out at its preferred (or overridden) width with its
+            pivot locked to the specified relative fraction of the parent component's width.
+            
+            Any other existing left or right edge constraints will be overwritten. This method
+            is equivalent to setting both the left and right edges to the same fraction.
+            </summary>
+            <param name="item">The component to adjust.</param>
+            <param name="anchor">The fraction to which to align the pivot, with 0.0f
+            being the left and 1.0f being the right.</param>
+            <returns>This object, for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PRelativePanel.AnchorYAxis(PeterHan.PLib.UI.IUIComponent,System.Single)">
+            <summary>
+            Anchors the component's pivot in the Y axis to the specified anchor position.
+            The component will be laid out at its preferred (or overridden) height with its
+            pivot locked to the specified relative fraction of the parent component's height.
+            
+            Any other existing top or bottom edge constraints will be overwritten. This method
+            is equivalent to setting both the top and bottom edges to the same fraction.
+            </summary>
+            <param name="item">The component to adjust.</param>
+            <param name="anchor">The fraction to which to align the pivot, with 0.0f
+            being the bottom and 1.0f being the top.</param>
+            <returns>This object, for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PRelativePanel.GetOrThrow(PeterHan.PLib.UI.IUIComponent)">
+            <summary>
+            Retrieves the constraints for a component, or throws an exception if the component
+            has not yet been added.
+            </summary>
+            <param name="item">The unrealized component to look up.</param>
+            <returns>The constraints for that component.</returns>
+            <exception cref="T:System.ArgumentException">If the component has not yet been added to the panel.</exception>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PRelativePanel.OverrideSize(PeterHan.PLib.UI.IUIComponent,UnityEngine.Vector2)">
+            <summary>
+            Overrides the preferred size of a component. If set, instead of looking at layout
+            sizes of the component, the specified size will be used instead.
+            </summary>
+            <param name="item">The component to adjust.</param>
+            <param name="size">The size to apply. Only dimensions greater than zero will be used.</param>
+            <returns>This object, for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PRelativePanel.Resolve(PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase{UnityEngine.GameObject}.EdgeStatus,PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase{PeterHan.PLib.UI.IUIComponent}.EdgeStatus,System.Collections.Generic.IDictionary{PeterHan.PLib.UI.IUIComponent,UnityEngine.GameObject})">
+            <summary>
+            Converts the edge settings configured in this component to settings for the
+            relative panel.
+            </summary>
+            <param name="dest">The location where the converted settings will be stored.</param>
+            <param name="status">The original component edge configuration.</param>
+            <param name="mapping">The mapping from PLib UI components to Unity objects.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PRelativePanel.SetBottomEdge(PeterHan.PLib.UI.IUIComponent,System.Single,PeterHan.PLib.UI.IUIComponent)">
+            <summary>
+            Sets the bottom edge of a game object. If the fraction is supplied, the component
+            will be laid out with the bottom edge anchored to that fraction of the parent's
+            height. If a component is specified and no fraction is specified, the component
+            will be anchored with its bottom edge above the top edge of that component.
+            If neither is specified, all bottom edge constraints will be removed.
+            
+            Any other existing bottom edge constraint will be overwritten.
+            
+            Remember that +Y is in the upwards direction.
+            </summary>
+            <param name="item">The component to adjust.</param>
+            <param name="fraction">The fraction to which to align the bottom edge, with 0.0f
+            being the bottom and 1.0f being the top.</param>
+            <param name="above">The game object which this component must be above.</param>
+            <returns>This object, for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PRelativePanel.SetEdge(PeterHan.PLib.UI.Layouts.RelativeLayoutParamsBase{PeterHan.PLib.UI.IUIComponent}.EdgeStatus,System.Single,PeterHan.PLib.UI.IUIComponent)">
+            <summary>
+            Sets a component's edge constraint.
+            </summary>
+            <param name="edge">The edge to set.</param>
+            <param name="fraction">The fraction of the parent to anchor.</param>
+            <param name="child">The other component to anchor.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PRelativePanel.SetLeftEdge(PeterHan.PLib.UI.IUIComponent,System.Single,PeterHan.PLib.UI.IUIComponent)">
+            <summary>
+            Sets the left edge of a game object. If the fraction is supplied, the component
+            will be laid out with the left edge anchored to that fraction of the parent's
+            width. If a component is specified and no fraction is specified, the component
+            will be anchored with its left edge to the right of that component.
+            If neither is specified, all left edge constraints will be removed.
+            
+            Any other existing left edge constraint will be overwritten.
+            </summary>
+            <param name="item">The component to adjust.</param>
+            <param name="fraction">The fraction to which to align the left edge, with 0.0f
+            being the left and 1.0f being the right.</param>
+            <param name="toLeft">The game object which this component must be to the right of.</param>
+            <returns>This object, for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PRelativePanel.SetMargin(PeterHan.PLib.UI.IUIComponent,UnityEngine.RectOffset)">
+            <summary>
+            Sets the insets of a component from its anchor points. A positive number insets the
+            component away from the edge, whereas a negative number out-sets the component
+            across the edge.
+            
+            All components default to no insets.
+            
+            Any reference to a component's edge using other constraints always refers to its
+            edge <b>before</b> insets are applied.
+            </summary>
+            <param name="item">The component to adjust.</param>
+            <param name="insets">The insets to apply. If null, the insets will be set to zero.</param>
+            <returns>This object, for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PRelativePanel.SetRightEdge(PeterHan.PLib.UI.IUIComponent,System.Single,PeterHan.PLib.UI.IUIComponent)">
+            <summary>
+            Sets the right edge of a game object. If the fraction is supplied, the component
+            will be laid out with the right edge anchored to that fraction of the parent's
+            width. If a component is specified and no fraction is specified, the component
+            will be anchored with its right edge to the left of that component.
+            If neither is specified, all right edge constraints will be removed.
+            
+            Any other existing right edge constraint will be overwritten.
+            </summary>
+            <param name="item">The component to adjust.</param>
+            <param name="fraction">The fraction to which to align the right edge, with 0.0f
+            being the left and 1.0f being the right.</param>
+            <param name="toLeft">The game object which this component must be to the left of.</param>
+            <returns>This object, for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PRelativePanel.SetTopEdge(PeterHan.PLib.UI.IUIComponent,System.Single,PeterHan.PLib.UI.IUIComponent)">
+            <summary>
+            Sets the top edge of a game object. If the fraction is supplied, the component
+            will be laid out with the top edge anchored to that fraction of the parent's
+            height. If a component is specified and no fraction is specified, the component
+            will be anchored with its top edge above the bottom edge of that component.
+            If neither is specified, all top edge constraints will be removed.
+            
+            Any other existing top edge constraint will be overwritten.
+            
+            Remember that +Y is in the upwards direction.
+            </summary>
+            <param name="item">The component to adjust.</param>
+            <param name="fraction">The fraction to which to align the top edge, with 0.0f
+            being the bottom and 1.0f being the top.</param>
+            <param name="below">The game object which this component must be below.</param>
+            <returns>This object, for call chaining.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PScrollPane">
+            <summary>
+            A factory for scrollable panes.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PScrollPane.DEFAULT_TRACK_SIZE">
+            <summary>
+            The track size of scrollbars is based on the sprite.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PScrollPane.AlwaysShowHorizontal">
+            <summary>
+            Whether the horizontal scrollbar is always visible.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PScrollPane.AlwaysShowVertical">
+            <summary>
+            Whether the vertical scrollbar is always visible.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PScrollPane.BackColor">
+            <summary>
+            The background color of this scroll pane.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PScrollPane.Child">
+            <summary>
+            The child of this scroll pane.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PScrollPane.FlexSize">
+            <summary>
+            The flexible size bounds of this component.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PScrollPane.ScrollHorizontal">
+            <summary>
+            Whether horizontal scrolling is allowed.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PScrollPane.ScrollVertical">
+            <summary>
+            Whether vertical scrolling is allowed.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PScrollPane.TrackSize">
+            <summary>
+            The size of the scrollbar track.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PScrollPane.AddOnRealize(PeterHan.PLib.UI.PUIDelegates.OnRealize)">
+            <summary>
+            Adds a handler when this scroll pane is realized.
+            </summary>
+            <param name="onRealize">The handler to invoke on realization.</param>
+            <returns>This scroll pane for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PScrollPane.BuildScrollPane(UnityEngine.GameObject,UnityEngine.GameObject)">
+            <summary>
+            Builds the actual scroll pane object.
+            </summary>
+            <param name="parent">The parent of this scroll pane.</param>
+            <param name="child">The child element of this scroll pane.</param>
+            <returns>The realized scroll pane.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PScrollPane.CreateScrollHoriz(UnityEngine.GameObject)">
+            <summary>
+            Creates a horizontal scroll bar.
+            </summary>
+            <param name="parent">The parent component.</param>
+            <returns>The scroll bar component.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PScrollPane.CreateScrollVert(UnityEngine.GameObject)">
+            <summary>
+            Creates a vertical scroll bar.
+            </summary>
+            <param name="parent">The parent component.</param>
+            <returns>The scroll bar component.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PScrollPane.SetKleiBlueColor">
+            <summary>
+            Sets the background color to the default Klei dialog blue.
+            </summary>
+            <returns>This scroll pane for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PScrollPane.SetKleiPinkColor">
+            <summary>
+            Sets the background color to the Klei dialog header pink.
+            </summary>
+            <returns>This scroll pane for call chaining.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PScrollPane.PScrollPaneLayout">
+            <summary>
+            Handles layout for scroll panes. Not freezable.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PScrollPane.PScrollPaneLayout.calcElements">
+            <summary>
+            Caches elements when calculating layout to improve performance.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PScrollPane.PScrollPaneLayout.childHorizontal">
+            <summary>
+            The calculated horizontal size of the child element.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PScrollPane.PScrollPaneLayout.childVertical">
+            <summary>
+            The calculated vertical size of the child element.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PScrollPane.PScrollPaneLayout.child">
+            <summary>
+            The child object inside the scroll rect.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PScrollPane.PScrollPaneLayout.setElements">
+            <summary>
+            Caches elements when setting layout to improve performance.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PScrollPane.PScrollPaneLayout.viewport">
+            <summary>
+            The viewport which clips the child rectangle.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PScrollPane.PScrollPaneLayout.UpdateComponents">
+            <summary>
+            Caches the child component for performance reasons at runtime.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PScrollPane.ViewportLayoutGroup">
+            <summary>
+            A layout group object that does nothing. While it seems completely pointless,
+            it allows LayoutRebuilder to pass by the viewport on Scroll Rects on its way up
+            the tree, thus ensuring that the scroll rect gets rebuilt.
+            
+            On the way back down, this component gets skipped over by PScrollPaneLayout to
+            save on processing, and the child layout is built directly.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PSliderSingle">
+            <summary>
+            A custom UI slider factory class with one handle. Does not include a text field to set
+            the value.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PSliderSingle.SetCurrentValue(UnityEngine.GameObject,System.Single)">
+            <summary>
+            Sets the current value of a realized slider.
+            </summary>
+            <param name="realized">The realized slider.</param>
+            <param name="value">The value to set.</param>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PSliderSingle.Direction">
+            <summary>
+            The direction of the slider. The slider goes from minimum to maximum value in the
+            direction indicated, i.e. LeftToRight is minimum left, maximum right.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PSliderSingle.FlexSize">
+            <summary>
+            The flexible size bounds of this component.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PSliderSingle.HandleColor">
+            <summary>
+            The slider's handle color.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PSliderSingle.HandleSize">
+            <summary>
+            The size of the slider handle.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PSliderSingle.InitialValue">
+            <summary>
+            The initial slider value.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PSliderSingle.IntegersOnly">
+            <summary>
+            true to make the slider snap to integers, or false to allow any representable
+            floating point number in the range.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PSliderSingle.MaxValue">
+            <summary>
+            The maximum value that can be set by this slider. The slider is a linear scale, but
+            can be post-scaled by the user to nonlinear if necessary.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PSliderSingle.MinValue">
+            <summary>
+            The minimum value that can be set by this slider.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PSliderSingle.OnDrag">
+            <summary>
+            The action to trigger during slider dragging.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PSliderSingle.PreferredLength">
+            <summary>
+            The preferred length of the scrollbar. If vertical, this is the height, otherwise
+            it is the width.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PSliderSingle.OnValueChanged">
+            <summary>
+            The action to trigger after the slider is changed. It is passed the realized source
+            object and new value.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PSliderSingle.ToolTip">
+            <summary>
+            The tool tip text. If {0} is present, it will be formatted with the slider's
+            current value.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PSliderSingle.TrackSize">
+            <summary>
+            The size of the slider track.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PSliderSingle.AddOnRealize(PeterHan.PLib.UI.PUIDelegates.OnRealize)">
+            <summary>
+            Adds a handler when this slider is realized.
+            </summary>
+            <param name="onRealize">The handler to invoke on realization.</param>
+            <returns>This slider for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PSliderSingle.CreateHandle(UnityEngine.GameObject)">
+            <summary>
+            Creates the handle component.
+            </summary>
+            <param name="slider">The parent component.</param>
+            <returns>The sliding handle object.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PSliderSingle.SetKleiPinkStyle">
+            <summary>
+            Sets the default Klei pink button style as this slider's foreground color style.
+            </summary>
+            <returns>This button for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PSliderSingle.SetKleiBlueStyle">
+            <summary>
+            Sets the default Klei blue button style as this slider's foreground color style.
+            
+            Note that the default slider handle has a hard coded pink color.
+            </summary>
+            <returns>This button for call chaining.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PSpacer">
+            <summary>
+            A spacer to add into layouts. Has a large flexible width/height by default to eat all
+            the extra space.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PSpacer.FlexSize">
+            <summary>
+            The flexible size of this spacer. Defaults to (1, 1) but can be set to (0, 0) to
+            make this spacer a fixed size area instead.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PSpacer.PreferredSize">
+            <summary>
+            The preferred size of this spacer.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PTextArea">
+            <summary>
+            A custom UI text area (multi-line text field) factory class. This class should
+            probably be wrapped in a scroll pane.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextArea.BackColor">
+            <summary>
+            The text area's background color.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextArea.FlexSize">
+            <summary>
+            The flexible size bounds of this component.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextArea.LineCount">
+            <summary>
+            The preferred number of text lines to be displayed. If the component is made
+            bigger, the number of text lines (and size) can increase.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextArea.MaxLength">
+            <summary>
+            The maximum number of characters in this text area.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextArea.MinWidth">
+            <summary>
+            The minimum width in units (not characters!) of this text area.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextArea.TextAlignment">
+            <summary>
+            The text alignment in the text area.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextArea.Text">
+            <summary>
+            The initial text in the text field.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextArea.TextStyle">
+            <summary>
+            The text field's text color, font, word wrap settings, and font size.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextArea.ToolTip">
+            <summary>
+            The tool tip text.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextArea.OnTextChanged">
+            <summary>
+            The action to trigger on text change. It is passed the realized source object.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextArea.OnValidate">
+            <summary>
+            The callback to invoke when validating input.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PTextArea.AddOnRealize(PeterHan.PLib.UI.PUIDelegates.OnRealize)">
+            <summary>
+            Adds a handler when this text area is realized.
+            </summary>
+            <param name="onRealize">The handler to invoke on realization.</param>
+            <returns>This text area for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PTextArea.ConfigureTextEntry(TMPro.TMP_InputField)">
+            <summary>
+            Sets up the text entry field.
+            </summary>
+            <param name="textEntry">The input field to configure.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PTextArea.SetKleiPinkStyle">
+            <summary>
+            Sets the default Klei pink style as this text area's color and text style.
+            </summary>
+            <returns>This button for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PTextArea.SetKleiBlueStyle">
+            <summary>
+            Sets the default Klei blue style as this text area's color and text style.
+            </summary>
+            <returns>This button for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PTextArea.SetMinWidthInCharacters(System.Int32)">
+            <summary>
+            Sets the minimum (and preferred) width of this text area in characters.
+            
+            The width is computed using the currently selected text style.
+            </summary>
+            <param name="chars">The number of characters to be displayed.</param>
+            <returns>This button for call chaining.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PTextComponent">
+            <summary>
+            The abstract parent of PLib UI components which display text and/or images.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PTextComponent.CENTER">
+            <summary>
+            The center of an object for pivoting.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PTextComponent.ArrangeComponent(PeterHan.PLib.UI.RelativeLayoutGroup,UnityEngine.GameObject,UnityEngine.TextAnchor)">
+            <summary>
+            Arranges a component in the parent layout in both directions.
+            </summary>
+            <param name="layout">The layout to modify.</param>
+            <param name="target">The target object to arrange.</param>
+            <param name="alignment">The object alignment to use.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PTextComponent.ImageChildHelper(UnityEngine.GameObject,PeterHan.PLib.UI.PTextComponent)">
+            <summary>
+            Shared routine to spawn UI image objects.
+            </summary>
+            <param name="parent">The parent object for the image.</param>
+            <param name="settings">The settings to use for displaying the image.</param>
+            <returns>The child image object.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PTextComponent.TextChildHelper(UnityEngine.GameObject,TextStyleSetting,System.String)">
+            <summary>
+            Shared routine to spawn UI text objects.
+            </summary>
+            <param name="parent">The parent object for the text.</param>
+            <param name="style">The text style to use.</param>
+            <param name="contents">The default text.</param>
+            <returns>The child text object.</returns>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextComponent.FlexSize">
+            <summary>
+            The flexible size bounds of this component.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextComponent.IconSpacing">
+            <summary>
+            The spacing between text and icon.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextComponent.MaintainSpriteAspect">
+            <summary>
+            If true, the sprite aspect ratio will be maintained even if it is resized.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextComponent.Margin">
+            <summary>
+            The margin around the component.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextComponent.Sprite">
+            <summary>
+            The sprite to display, or null to display no sprite.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextComponent.SpriteMode">
+            <summary>
+            The image mode to use for the sprite.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextComponent.SpritePosition">
+            <summary>
+            The position to use for the sprite relative to the text.
+            
+            If TextAnchor.MiddleCenter is used, the image will directly overlap the text.
+            Otherwise, it will be placed in the specified location relative to the text.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextComponent.SpriteSize">
+            <summary>
+            The size to scale the sprite. If 0x0, it will not be scaled.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextComponent.SpriteTint">
+            <summary>
+            The color to tint the sprite. For no tint, use Color.white.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextComponent.SpriteTransform">
+            <summary>
+            How to rotate or flip the sprite.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextComponent.Text">
+            <summary>
+            The component's text.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextComponent.TextAlignment">
+            <summary>
+            The text alignment in the component. Controls the placement of the text and sprite
+            combination relative to the component's overall outline if the component is
+            expanded from its default size.
+            
+            The text and sprite will move as a unit to follow this text alignment. Note that
+            incorrect positions will result if this alignment is centered in the same direction
+            as the sprite position offset, if both a sprite and text are defined.
+            
+            If the SpritePosition uses any variant of Left or Right, using UpperCenter,
+            MiddleCenter, or LowerCenter for TextAlignment would result in undefined text and
+            sprite positioning. Likewise, a SpritePosition using any variant of Lower or Upper
+            would cause undefined positioning if TextAlignment was MiddleLeft, MiddleCenter,
+            or MiddleRight.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextComponent.TextStyle">
+            <summary>
+            The component's text color, font, word wrap settings, and font size.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextComponent.ToolTip">
+            <summary>
+            The tool tip text.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PTextComponent.DestroyLayoutIfPossible(UnityEngine.GameObject)">
+            <summary>
+            If the flex size is zero and dynamic size is false, the layout group can be
+            completely destroyed on a text component after the layout is locked.
+            </summary>
+            <param name="component">The realized text component.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PTextComponent.InvokeRealize(UnityEngine.GameObject)">
+            <summary>
+            Invokes the OnRealize event.
+            </summary>
+            <param name="obj">The realized text component.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PTextComponent.WrapTextAndSprite(UnityEngine.GameObject,UnityEngine.GameObject)">
+            <summary>
+            Wraps the text and sprite into a single GameObject that properly positions them
+            relative to each other, if necessary.
+            </summary>
+            <param name="text">The text component.</param>
+            <param name="sprite">The sprite component.</param>
+            <returns>A game object that contains both of them, or null if both are null.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PTextField">
+            <summary>
+            A custom UI text field factory class.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PTextField.ConfigureField(TMPro.TextMeshProUGUI,TextStyleSetting,TMPro.TextAlignmentOptions)">
+            <summary>
+            Configures a Text Mesh Pro field.
+            </summary>
+            <param name="component">The text component to configure.</param>
+            <param name="style">The desired text color, font, and style.</param>
+            <param name="alignment">The text alignment.</param>
+            <returns>The component, for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PTextField.GetText(UnityEngine.GameObject)">
+            <summary>
+            Gets a text field's text.
+            </summary>
+            <param name="textField">The UI element to retrieve.</param>
+            <returns>The current text in the field.</returns>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextField.BackColor">
+            <summary>
+            The text field's background color.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextField.ContentType">
+            <summary>
+            Retrieves the built-in field type used for Text Mesh Pro.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextField.FlexSize">
+            <summary>
+            The flexible size bounds of this component.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextField.MaxLength">
+            <summary>
+            The maximum number of characters in this text field.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextField.MinWidth">
+            <summary>
+            The minimum width in units (not characters!) of this text field.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextField.PlaceholderStyle">
+            <summary>
+            The placeholder text style (including color, font, and word wrap settings) if the
+            field is empty.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextField.PlaceholderText">
+            <summary>
+            The placeholder text if the field is empty.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextField.TextAlignment">
+            <summary>
+            The text alignment in the text field.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextField.Text">
+            <summary>
+            The initial text in the text field.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextField.TextStyle">
+            <summary>
+            The text field's text color, font, word wrap settings, and font size.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextField.ToolTip">
+            <summary>
+            The tool tip text.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextField.Type">
+            <summary>
+            The field type.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextField.OnTextChanged">
+            <summary>
+            The action to trigger on text change. It is passed the realized source object.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextField.OnValidate">
+            <summary>
+            The callback to invoke when validating input.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PTextField.AddOnRealize(PeterHan.PLib.UI.PUIDelegates.OnRealize)">
+            <summary>
+            Adds a handler when this text field is realized.
+            </summary>
+            <param name="onRealize">The handler to invoke on realization.</param>
+            <returns>This text field for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PTextField.ConfigureTextEntry(TMPro.TMP_InputField)">
+            <summary>
+            Sets up the text entry field.
+            </summary>
+            <param name="textEntry">The input field to configure.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PTextField.SetKleiPinkStyle">
+            <summary>
+            Sets the default Klei pink style as this text field's color and text style.
+            </summary>
+            <returns>This text field for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PTextField.SetKleiBlueStyle">
+            <summary>
+            Sets the default Klei blue style as this text field's color and text style.
+            </summary>
+            <returns>This text field for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PTextField.SetMinWidthInCharacters(System.Int32)">
+            <summary>
+            Sets the minimum (and preferred) width of this text field in characters.
+            
+            The width is computed using the currently selected text style.
+            </summary>
+            <param name="chars">The number of characters to be displayed.</param>
+            <returns>This text field for call chaining.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PTextField.FieldType">
+            <summary>
+            The valid text field types supported by this class.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PTextFieldEvents">
+            <summary>
+            A class instance that handles events for text fields.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextFieldEvents.OnTextChanged">
+            <summary>
+            The action to trigger on text change. It is passed the realized source object.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextFieldEvents.OnValidate">
+            <summary>
+            The callback to invoke when validating input.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PTextFieldEvents.TextObject">
+            <summary>
+            The object to resize on text change.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PTextFieldEvents.editing">
+            <summary>
+            Whether editing is in progress.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PTextFieldEvents.DelayEndEdit">
+            <summary>
+            Completes the edit process one frame after the data is entered.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PTextFieldEvents.OnEndEdit(System.String)">
+            <summary>
+            Triggered when editing of the text ends (field loses focus).
+            </summary>
+            <param name="text">The text entered.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PTextFieldEvents.OnFocus">
+            <summary>
+            Triggered when the text field gains focus.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PTextFieldEvents.OnKeyDown(KButtonEvent)">
+            <summary>
+            Destroys events if editing is in progress to prevent bubbling through to the
+            game UI.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PTextFieldEvents.OnKeyUp(KButtonEvent)">
+            <summary>
+            Destroys events if editing is in progress to prevent bubbling through to the
+            game UI.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PTextFieldEvents.OnValueChanged(System.String)">
+            <summary>
+            Triggered when the text box value changes.
+            </summary>
+            <param name="text">The text entered.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PTextFieldEvents.StopEditing">
+            <summary>
+            Completes the edit process.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PToggle">
+            <summary>
+            A custom UI toggled button factory class.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PToggle.TOGGLE_MARGIN">
+            <summary>
+            The default margins around a toggle.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PToggle.GetToggleState(UnityEngine.GameObject)">
+            <summary>
+            Gets a realized toggle button's state.
+            </summary>
+            <param name="realized">The realized toggle button.</param>
+            <returns>The toggle button state.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PToggle.SetToggleState(UnityEngine.GameObject,System.Boolean)">
+            <summary>
+            Sets a realized toggle button's state.
+            </summary>
+            <param name="realized">The realized toggle button.</param>
+            <param name="on">Whether the button should be on or off.</param>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PToggle.ActiveSprite">
+            <summary>
+            The sprite to display when active.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PToggle.Color">
+            <summary>
+            The toggle's color.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PToggle.FlexSize">
+            <summary>
+            The flexible size bounds of this component.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PToggle.InactiveSprite">
+            <summary>
+            The sprite to display when inactive.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PToggle.InitialState">
+            <summary>
+            The initial state of the toggle button.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PToggle.Margin">
+            <summary>
+            The margin around the component.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PToggle.OnStateChanged">
+            <summary>
+            The action to trigger when the state changes. It is passed the realized source
+            object.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PToggle.Size">
+            <summary>
+            The size to scale the toggle images. If 0x0, it will not be scaled.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PToggle.ToolTip">
+            <summary>
+            The tool tip text.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PToggle.AddOnRealize(PeterHan.PLib.UI.PUIDelegates.OnRealize)">
+            <summary>
+            Adds a handler when this toggle button is realized.
+            </summary>
+            <param name="onRealize">The handler to invoke on realization.</param>
+            <returns>This toggle button for call chaining.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PUIDelegates">
+            <summary>
+            Delegate types used in the UI event system.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PUIDelegates.OnDialogClosed">
+            <summary>
+            The delegate type invoked when a dialog is closed.
+            </summary>
+            <param name="option">The key of the chosen option, or PDialog.DIALOG_CLOSE_KEY if
+            the dialog was closed with ESC or the X button.</param>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PUIDelegates.OnButtonPressed">
+            <summary>
+            The delegate type invoked when a button is pressed.
+            </summary>
+            <param name="source">The source button.</param>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PUIDelegates.OnChecked">
+            <summary>
+            The delegate type invoked when a checkbox is clicked.
+            </summary>
+            <param name="source">The source button.</param>
+            <param name="state">The checkbox state.</param>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PUIDelegates.OnDropdownChanged`1">
+            <summary>
+            The delegate type invoked when an option is selected from a combo box.
+            </summary>
+            <param name="source">The source dropdown.</param>
+            <param name="choice">The option chosen.</param>
+            <typeparam name="T">The type of the objects in the drop down.</typeparam>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PUIDelegates.OnRealize">
+            <summary>
+            The delegate type invoked when components are converted into Unity game objects.
+            </summary>
+            <param name="realized">The realized object.</param>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PUIDelegates.OnSliderChanged">
+            <summary>
+            The delegate type invoked once after a slider is changed and released.
+            </summary>
+            <param name="source">The source slider.</param>
+            <param name="newValue">The new slider value.</param>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PUIDelegates.OnSliderDrag">
+            <summary>
+            The delegate type invoked while a slider is being changed.
+            </summary>
+            <param name="source">The source slider.</param>
+            <param name="newValue">The new slider value.</param>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PUIDelegates.OnTextChanged">
+            <summary>
+            The delegate type invoked when text in a text field is changed.
+            </summary>
+            <param name="source">The source text field.</param>
+            <param name="text">The new text.</param>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PUIDelegates.OnToggleButton">
+            <summary>
+            The delegate type invoked when a toggle button is swapped between states.
+            </summary>
+            <param name="source">The source button.</param>
+            <param name="on">true if the button is toggled on, or false otherwise.</param>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PUIElements">
+            <summary>
+            Used for creating and managing UI elements.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIElements.AddLocText(UnityEngine.GameObject,TextStyleSetting)">
+            <summary>
+            Safely adds a LocText to a game object without throwing an NRE on construction.
+            </summary>
+            <param name="parent">The game object to add the LocText.</param>
+            <param name="setting">The text style.</param>
+            <returns>The added LocText object.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIElements.AddSizeFitter(UnityEngine.GameObject,System.Boolean,UnityEngine.UI.ContentSizeFitter.FitMode,UnityEngine.UI.ContentSizeFitter.FitMode)">
+            <summary>
+            Adds an auto-fit resizer to a UI element.
+            
+            UI elements should be active before any layouts are added, especially if they are
+            to be frozen.
+            </summary>
+            <param name="uiElement">The element to resize.</param>
+            <param name="dynamic">true to use the Unity content size fitter which adjusts to
+            content changes, or false to set the size only once.</param>
+            <param name="modeHoriz">The sizing mode to use in the horizontal direction.</param>
+            <param name="modeVert">The sizing mode to use in the vertical direction.</param>
+            <returns>The UI element, for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIElements.CreateUI(UnityEngine.GameObject,System.String,System.Boolean,PeterHan.PLib.UI.PUIAnchoring,PeterHan.PLib.UI.PUIAnchoring)">
+            <summary>
+            Creates a UI game object.
+            </summary>
+            <param name="parent">The parent of the UI object. If not set now, or added/changed
+            later, the anchors must be redefined.</param>
+            <param name="name">The object name.</param>
+            <param name="canvas">true to add a canvas renderer, or false otherwise.</param>
+            <param name="horizAnchor">How to anchor the object horizontally.</param>
+            <param name="vertAnchor">How to anchor the object vertically.</param>
+            <returns>The UI object with transform and canvas initialized.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIElements.DoNothing">
+            <summary>
+            Does nothing, to make the buttons appear.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIElements.FitSizeNow(UnityEngine.GameObject,UnityEngine.UI.ContentSizeFitter.FitMode,UnityEngine.UI.ContentSizeFitter.FitMode)">
+            <summary>
+            Fits the UI element's size immediately, as if ContentSizeFitter was created on it,
+            but does not create a component and only affects the size once.
+            </summary>
+            <param name="uiElement">The element to resize.</param>
+            <param name="modeHoriz">The sizing mode to use in the horizontal direction.</param>
+            <param name="modeVert">The sizing mode to use in the vertical direction.</param>
+            <returns>The UI element, for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIElements.SetAnchors(UnityEngine.GameObject,PeterHan.PLib.UI.PUIAnchoring,PeterHan.PLib.UI.PUIAnchoring)">
+            <summary>
+            Sets the anchor location of a UI element. The offsets will be reset, use
+            SetAnchorOffsets to adjust the offset from the new anchor locations.
+            </summary>
+            <param name="uiElement">The UI element to modify.</param>
+            <param name="horizAnchor">The horizontal anchor mode.</param>
+            <param name="vertAnchor">The vertical anchor mode.</param>
+            <returns>The UI element, for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIElements.SetAnchorOffsets(UnityEngine.GameObject,UnityEngine.RectOffset)">
+            <summary>
+            Sets the offsets of the UI component from its anchors. Positive for each value
+            denotes towards the component center, and negative away from the component center.
+            </summary>
+            <param name="uiElement">The UI element to modify.</param>
+            <param name="border">The offset of each corner from the anchors.</param>
+            <returns>The UI element, for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIElements.SetAnchorOffsets(UnityEngine.GameObject,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Sets the offsets of the UI component from its anchors. Positive for each value
+            denotes towards the component center, and negative away from the component center.
+            </summary>
+            <param name="uiElement">The UI element to modify.</param>
+            <param name="left">The left border in pixels.</param>
+            <param name="right">The right border in pixels.</param>
+            <param name="top">The top border in pixels.</param>
+            <param name="bottom">The bottom border in pixels.</param>
+            <returns>The UI element, for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIElements.SetText(UnityEngine.GameObject,System.String)">
+            <summary>
+            Sets a UI element's text.
+            </summary>
+            <param name="uiElement">The UI element to modify.</param>
+            <param name="text">The text to display on the element.</param>
+            <returns>The UI element, for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIElements.SetToolTip(UnityEngine.GameObject,System.String)">
+            <summary>
+            Sets a UI element's tool tip.
+            </summary>
+            <param name="uiElement">The UI element to modify.</param>
+            <param name="tooltip">The tool tip text to display when hovered.</param>
+            <returns>The UI element, for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIElements.ShowConfirmDialog(UnityEngine.GameObject,System.String,System.Action,System.Action,System.String,System.String)">
+            <summary>
+            Shows a confirmation dialog.
+            </summary>
+            <param name="parent">The dialog's parent.</param>
+            <param name="message">The message to display.</param>
+            <param name="onConfirm">The action to invoke if Yes or OK is selected.</param>
+            <param name="onCancel">The action to invoke if No or Cancel is selected.</param>
+            <param name="confirmText">The text for the OK/Yes button.</param>
+            <param name="cancelText">The text for the Cancel/No button.</param>
+            <returns>The dialog created.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIElements.ShowMessageDialog(UnityEngine.GameObject,System.String)">
+            <summary>
+            Shows a message dialog.
+            </summary>
+            <param name="parent">The dialog's parent.</param>
+            <param name="message">The message to display.</param>
+            <returns>The dialog created.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PUIAnchoring">
+            <summary>
+            The anchor mode to set a UI component.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PUITuning">
+            <summary>
+            Sets up common parameters for the UI in PLib based mods. Note that this class is still
+            specific to individual mods so the values in the latest PLib will not supersede them.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PUITuning.Images">
+            <summary>
+            UI images.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Images.Arrow">
+            <summary>
+            The right arrow image. Rotate it in the Image to get more directions.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Images.BoxBorder">
+            <summary>
+            The image used to make a 1px solid black border.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Images.BoxBorderWhite">
+            <summary>
+            The image used to make a 1px solid white border.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Images.ButtonBorder">
+            <summary>
+            The default image used for button appearance.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Images.CheckBorder">
+            <summary>
+            The border image around a checkbox.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Images.Checked">
+            <summary>
+            The image for a check box which is checked.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Images.Close">
+            <summary>
+            The image used for dialog close buttons.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Images.Contract">
+            <summary>
+            The image for contracting a category.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Images.Expand">
+            <summary>
+            The image for expanding a category.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Images.Partial">
+            <summary>
+            The image for a check box which is neither checked nor unchecked.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Images.ScrollBorderHorizontal">
+            <summary>
+            The border of a horizontal scroll bar.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Images.ScrollHandleHorizontal">
+            <summary>
+            The handle of a horizontal scroll bar.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Images.ScrollBorderVertical">
+            <summary>
+            The border of a vertical scroll bar.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Images.ScrollHandleVertical">
+            <summary>
+            The handle of a vertical scroll bar.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Images.SliderHandle">
+            <summary>
+            The handle of a horizontal slider.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PUITuning.Images.SPRITES">
+            <summary>
+            The sprite dictionary.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUITuning.Images.GetSpriteByName(System.String)">
+            <summary>
+            Retrieves a sprite by its name.
+            </summary>
+            <param name="name">The sprite name.</param>
+            <returns>The matching sprite, or null if no sprite found in the resources has that name.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PUITuning.Colors">
+            <summary>
+            UI colors.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Colors.BackgroundLight">
+            <summary>
+            A white color used for default backgrounds.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Colors.ButtonPinkStyle">
+            <summary>
+            The color styles used on pink buttons.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Colors.ButtonBlueStyle">
+            <summary>
+            The color styles used on blue buttons.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Colors.ComponentDarkStyle">
+            <summary>
+            The default colors used on check boxes / toggles with dark backgrounds.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Colors.ComponentLightStyle">
+            <summary>
+            The default colors used on check boxes / toggles with white backgrounds.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Colors.DialogBackground">
+            <summary>
+            The color displayed on dialog backgrounds.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Colors.DialogDarkBackground">
+            <summary>
+            The color displayed in the large border around the outsides of options dialogs.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Colors.OptionsBackground">
+            <summary>
+            The color displayed on options dialog backgrounds.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Colors.ScrollbarColors">
+            <summary>
+            The color displayed on scrollbar handles.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Colors.SelectionBackground">
+            <summary>
+            The background color for selections.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Colors.SelectionForeground">
+            <summary>
+            The foreground color for selections.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Colors.Transparent">
+            <summary>
+            A completely transparent color.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Colors.UITextDark">
+            <summary>
+            Used for dark-colored UI text.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Colors.UITextLight">
+            <summary>
+            Used for light-colored UI text.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PUITuning.Fonts">
+            <summary>
+            Collects references to fonts in the game.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PUITuning.Fonts.FONT_TEXT">
+            <summary>
+            The text font name.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PUITuning.Fonts.FONT_UI">
+            <summary>
+            The UI font name.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Fonts.DefaultSize">
+            <summary>
+            The default font size.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Fonts.Text">
+            <summary>
+            The font used on text.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Fonts.TextDarkStyle">
+            <summary>
+            The text styles used on all items with a light background.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Fonts.TextLightStyle">
+            <summary>
+            The text styles used on all items with a dark background.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Fonts.UI">
+            <summary>
+            The font used on UI elements.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Fonts.UIDarkStyle">
+            <summary>
+            The text styles used on all UI items with a light background.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.Fonts.UILightStyle">
+            <summary>
+            The text styles used on all UI items with a dark background.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.UI.PUITuning.Fonts.FONTS">
+            <summary>
+            The font dictionary.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUITuning.Fonts.GetFontByName(System.String)">
+            <summary>
+            Retrieves a font by its name.
+            </summary>
+            <param name="name">The font name.</param>
+            <returns>The matching font, or null if no font found in the resources has that name.</returns>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.ButtonSounds">
+            <summary>
+            The sounds played by the button.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.UI.PUITuning.ToggleSounds">
+            <summary>
+            The sounds played by the toggle.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.UI.PUIUtils">
+            <summary>
+            Utility functions for dealing with Unity UIs.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.AddComponentText(System.Text.StringBuilder,UnityEngine.Component)">
+            <summary>
+            Adds text describing a particular component if available.
+            </summary>
+            <param name="result">The location to append the text.</param>
+            <param name="component">The component to describe.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.AddPinkOverlay(UnityEngine.GameObject)">
+            <summary>
+            Adds a hot pink rectangle over the target matching its size, to help identify it
+            better.
+            </summary>
+            <param name="parent">The target UI component.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.AddSideScreenContent``1(UnityEngine.GameObject)">
+            <summary>
+            Adds the specified side screen content to the side screen list. The side screen
+            behavior should be defined in a class inherited from SideScreenContent.
+            
+            The side screen will be added at the end of the list, which will cause it to
+            appear above previous side screens in the details panel.
+            
+            This method should be used in a postfix on DetailsScreen.OnPrefabInit.
+            </summary>
+            <typeparam name="T">The type of the controller that will determine how the side
+            screen works. A new instance will be created and added as a component to the new
+            side screen.</typeparam>
+            <param name="uiPrefab">The UI prefab to use. If null is passed, the UI should
+            be created and added to the GameObject hosting the controller object in its
+            constructor.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.AddSideScreenContentWithOrdering``1(System.String,System.Boolean,UnityEngine.GameObject)">
+            <summary>
+            Adds the specified side screen content to the side screen list. The side screen
+            behavior should be defined in a class inherited from SideScreenContent.
+            
+            This method should be used in a postfix on DetailsScreen.OnPrefabInit.
+            </summary>
+            <typeparam name="T">The type of the controller that will determine how the side
+            screen works. A new instance will be created and added as a component to the new
+            side screen.</typeparam>
+            <param name="targetClassName">The full name of the type of side screen to based to ordering 
+            around. An example of how this method can be used is:
+            `AddSideScreenContentWithOrdering&lt;MySideScreen&gt;(typeof(CapacityControlSideScreen).FullName);`
+            `typeof(TargetedSideScreen).FullName` is the suggested value of this parameter.
+            Side screens from other mods can be used with their qualified names, even if no
+            no reference to their type is available, but the target mod must have added their
+            custom side screen to the list first.</param>
+            <param name="insertBefore">Whether to insert the new screen before or after the
+            target side screen in the list. Defaults to before (true).
+            When inserting before the screen, if both are valid for a building then the side
+            screen of type "T" will show below the one of type "fullName". When inserting after
+            the screen, the reverse is true.</param>
+            <param name="uiPrefab">The UI prefab to use. If null is passed, the UI should
+            be created and added to the GameObject hosting the controller object in its
+            constructor.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.AddTo(PeterHan.PLib.UI.IUIComponent,UnityEngine.GameObject,System.Int32)">
+            <summary>
+            Builds a PLib UI object and adds it to an existing UI object.
+            </summary>
+            <param name="component">The UI object to add.</param>
+            <param name="parent">The parent of the new object.</param>
+            <param name="index">The sibling index to insert the element at, if provided.</param>
+            <returns>The built version of the UI object.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.CalcSizes(UnityEngine.GameObject,PeterHan.PLib.UI.PanelDirection,System.Collections.Generic.IEnumerable{UnityEngine.Component})">
+            <summary>
+            Calculates the size of a single game object.
+            </summary>
+            <param name="obj">The object to calculate.</param>
+            <param name="direction">The direction to calculate.</param>
+            <param name="components">The components of this game object.</param>
+            <returns>The object's minimum and preferred size.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.DebugObjectHierarchy(UnityEngine.GameObject)">
+            <summary>
+            Dumps information about the parent tree of the specified GameObject to the debug
+            log.
+            </summary>
+            <param name="item">The item to determine hierarchy.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.DebugObjectTree(UnityEngine.GameObject)">
+            <summary>
+            Dumps information about the specified GameObject to the debug log.
+            </summary>
+            <param name="root">The root hierarchy to dump.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.DeriveStyle(TextStyleSetting,System.Int32,System.Nullable{UnityEngine.Color},System.Nullable{TMPro.FontStyles})">
+            <summary>
+            Derives a font style from an existing style. The font face is copied unchanged,
+            but the other settings can be optionally modified.
+            </summary>
+            <param name="root">The style to use as a template.</param>
+            <param name="size">The font size, or 0 to use the template size.</param>
+            <param name="newColor">The font color, or null to use the template color.</param>
+            <param name="style">The font style, or null to use the template style.</param>
+            <returns>A copy of the root style with the specified parameters altered.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.ForceLayoutRebuild(UnityEngine.GameObject)">
+            <summary>
+            A debug function used to forcefully re-layout a UI.
+            </summary>
+            <param name="uiElement">The UI to layout</param>
+            <returns>The UI element, for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.GetEmWidth(TextStyleSetting)">
+            <summary>
+            Retrieves the estimated width of a single string character (uses 'm' as the
+            standard estimation character) in the given text style.
+            </summary>
+            <param name="style">The text style to use.</param>
+            <returns>The width in pixels that should be allocated.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.GetLineHeight(TextStyleSetting)">
+            <summary>
+            Retrieves the estimated height of one line of text in the given text style.
+            </summary>
+            <param name="style">The text style to use.</param>
+            <returns>The height in pixels that should be allocated.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.GetObjectTree(UnityEngine.GameObject,System.Int32)">
+            <summary>
+            Creates a string recursively describing the specified GameObject.
+            </summary>
+            <param name="root">The root GameObject hierarchy.</param>
+            <param name="indent">The indentation to use.</param>
+            <returns>A string describing this game object.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.GetProperSize(PeterHan.PLib.UI.LayoutSizes,System.Single)">
+            <summary>
+            Determines the size for a component on a particular axis.
+            </summary>
+            <param name="sizes">The declared sizes.</param>
+            <param name="allocated">The space allocated.</param>
+            <returns>The size that the component should be.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.GetOffset(UnityEngine.TextAnchor,PeterHan.PLib.UI.PanelDirection,System.Single)">
+            <summary>
+            Gets the offset required for a component in its box.
+            </summary>
+            <param name="alignment">The alignment to use.</param>
+            <param name="direction">The direction of layout.</param>
+            <param name="delta">The remaining space.</param>
+            <returns>The offset from the edge.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.GetParent(UnityEngine.GameObject)">
+            <summary>
+            Retrieves the parent of the GameObject, or null if it does not have a parent.
+            </summary>
+            <param name="child">The child object.</param>
+            <returns>The parent of that object, or null if it does not have a parent.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.InsetChild(UnityEngine.GameObject,UnityEngine.GameObject,UnityEngine.Vector2,UnityEngine.Vector2)">
+            <summary>
+            Insets a child component from its parent, and assigns a fixed size to the parent
+            equal to the provided size plus the insets.
+            </summary>
+            <param name="parent">The parent component.</param>
+            <param name="child">The child to inset.</param>
+            <param name="vertical">The vertical inset on each side.</param>
+            <param name="horizontal">The horizontal inset on each side.</param>
+            <param name="prefSize">The minimum component size.</param>
+            <returns>The parent component.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.InsertSideScreenContent(System.Collections.Generic.IList{DetailsScreen.SideScreenRef},DetailsScreen.SideScreenRef,System.String,System.Boolean)">
+            <summary>
+            Inserts the side screen at the target location.
+            </summary>
+            <param name="screens">The current list of side screens.</param>
+            <param name="newScreen">The screen to insert.</param>
+            <param name="targetClassName">The target class name for locating the screen. If this
+            class is not found, it will be added at the end regardless of insertBefore.</param>
+            <param name="insertBefore">true to insert before that class, or false to insert after.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.LoadSprite(System.String,UnityEngine.Vector4,System.Boolean)">
+            <summary>
+            Loads a sprite embedded in the calling assembly.
+            
+            It may be encoded using PNG, DXT5, or JPG format.
+            </summary>
+            <param name="path">The fully qualified path to the image to load.</param>
+            <param name="border">The sprite border. If there is no 9-patch border, use default(Vector4).</param>
+            <param name="log">true to log the sprite load, or false to load silently.</param>
+            <returns>The sprite thus loaded.</returns>
+            <exception cref="T:System.ArgumentException">If the image could not be loaded.</exception>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.LoadSprite(System.Reflection.Assembly,System.String,UnityEngine.Vector4,System.Boolean)">
+            <summary>
+            Loads a sprite embedded in the specified assembly as a 9-slice sprite.
+            
+            It may be encoded using PNG, DXT5, or JPG format.
+            </summary>
+            <param name="assembly">The assembly containing the image.</param>
+            <param name="path">The fully qualified path to the image to load.</param>
+            <param name="border">The sprite border.</param>
+            <param name="log">true to log the load, or false otherwise.</param>
+            <returns>The sprite thus loaded.</returns>
+            <exception cref="T:System.ArgumentException">If the image could not be loaded.</exception>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.LoadSpriteFile(System.String,UnityEngine.Vector4)">
+            <summary>
+            Loads a sprite from the file system as a 9-slice sprite.
+            
+            It may be encoded using PNG, DXT5, or JPG format.
+            </summary>
+            <param name="path">The path to the image to load.</param>
+            <param name="border">The sprite border.</param>
+            <param name="log">true to log the load, or false otherwise.</param>
+            <returns>The sprite thus loaded, or null if it could not be loaded.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.LoadSpriteLegacy(System.Reflection.Assembly,System.String,System.Int32,System.Int32,UnityEngine.Vector4)">
+            <summary>
+            Loads a DDS sprite embedded in the specified assembly as a 9-slice sprite.
+            
+            It must be encoded using the DXT5 format.
+            </summary>
+            <param name="assembly">The assembly containing the image.</param>
+            <param name="path">The fully qualified path to the DDS image to load.</param>
+            <param name="width">The desired width.</param>
+            <param name="height">The desired height.</param>
+            <param name="border">The sprite border.</param>
+            <param name="log">true to log the load, or false otherwise.</param>
+            <returns>The sprite thus loaded.</returns>
+            <exception cref="T:System.ArgumentException">If the image could not be loaded.</exception>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.LogUIDebug(System.String)">
+            <summary>
+            Logs a debug message encountered in PLib UI functions.
+            </summary>
+            <param name="message">The debug message.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.LogUIWarning(System.String)">
+            <summary>
+            Logs a warning encountered in PLib UI functions.
+            </summary>
+            <param name="message">The warning message.</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.PriValue(System.Single@,System.Single,System.Int32,System.Int32@)">
+            <summary>
+            Aggregates layout values, replacing the value if a higher priority value is given
+            and otherwise taking the largest value.
+            </summary>
+            <param name="value">The current value.</param>
+            <param name="newValue">The candidate new value. No operation if this is less than zero.</param>
+            <param name="newPri">The new value's layout priority.</param>
+            <param name="pri">The current value's priority</param>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.SetFlexUISize(UnityEngine.GameObject,UnityEngine.Vector2)">
+            <summary>
+            Sets a UI element's flexible size.
+            </summary>
+            <param name="uiElement">The UI element to modify.</param>
+            <param name="flexSize">The flexible size as a ratio.</param>
+            <returns>The UI element, for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.SetMinUISize(UnityEngine.GameObject,UnityEngine.Vector2)">
+            <summary>
+            Sets a UI element's minimum size.
+            </summary>
+            <param name="uiElement">The UI element to modify.</param>
+            <param name="minSize">The minimum size in units.</param>
+            <returns>The UI element, for call chaining.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.PUIUtils.SetUISize(UnityEngine.GameObject,UnityEngine.Vector2,System.Boolean)">
+            <summary>
+            Immediately resizes a UI element. Uses the element's current anchors. If a
+            dimension of the size is negative, the component will not be resized in that
+            dimension.
+            
+            If addLayout is true, a layout element is also added so that future auto layout
+            calls will try to maintain that size. Do not set addLayout to true if either of
+            the size dimensions are negative, as laying out components with a negative
+            preferred size may cause unexpected behavior.
+            </summary>
+            <param name="uiElement">The UI element to modify.</param>
+            <param name="size">The new element size.</param>
+            <param name="addLayout">true to add a layout element with that size, or false
+            otherwise.</param>
+            <returns>The UI element, for call chaining.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.UI.TextAnchorUtils">
+            <summary>
+            Extension methods to deal with TextAnchor alignments.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.UI.TextAnchorUtils.IsLeft(UnityEngine.TextAnchor)">
+            <summary>
+            Returns true if this text alignment is at the left.
+            </summary>
+            <param name="anchor">The anchoring to check.</param>
+            <returns>true if it denotes a Left alignment, or false otherwise.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.TextAnchorUtils.IsLower(UnityEngine.TextAnchor)">
+            <summary>
+            Returns true if this text alignment is at the bottom.
+            </summary>
+            <param name="anchor">The anchoring to check.</param>
+            <returns>true if it denotes a Lower alignment, or false otherwise.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.TextAnchorUtils.IsRight(UnityEngine.TextAnchor)">
+            <summary>
+            Returns true if this text alignment is at the right.
+            </summary>
+            <param name="anchor">The anchoring to check.</param>
+            <returns>true if it denotes a Right alignment, or false otherwise.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.TextAnchorUtils.IsUpper(UnityEngine.TextAnchor)">
+            <summary>
+            Returns true if this text alignment is at the top.
+            </summary>
+            <param name="anchor">The anchoring to check.</param>
+            <returns>true if it denotes an Upper alignment, or false otherwise.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.TextAnchorUtils.MirrorHorizontal(UnityEngine.TextAnchor)">
+            <summary>
+            Mirrors a text alignment horizontally. UpperLeft becomes UpperRight, MiddleLeft
+            becomes MiddleRight, and so forth.
+            </summary>
+            <param name="anchor">The anchoring to mirror.</param>
+            <returns>The horizontally reflected version of that mirror.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.UI.TextAnchorUtils.MirrorVertical(UnityEngine.TextAnchor)">
+            <summary>
+            Mirrors a text alignment vertically. UpperLeft becomes LowerLeft, LowerCenter
+            becomes UpperCenter, and so forth.
+            </summary>
+            <param name="anchor">The anchoring to mirror.</param>
+            <returns>The vertically reflected version of that mirror.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.UI.UIDetours">
+            <summary>
+            Stores detours used for Klei UI components. Klei loves adding optional parameters and
+            changing fields to/from properties, which while source compatible is binary
+            incompatible. These lazy detours (resolved on first use) can bridge over a variety of
+            such differences with minimal overhead and no recompilation.
+            </summary>
+        </member>
+    </members>
+</doc>

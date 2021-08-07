@@ -1,0 +1,234 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PLibActions</name>
+    </assembly>
+    <members>
+        <member name="T:PeterHan.PLib.Actions.PAction">
+            <summary>
+            An Action managed by PLib. Actions have key bindings assigned to them.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Actions.PAction.MaxAction">
+            <summary>
+            The maximum action value (typically used to mean "no action") used in the currently
+            running instance of the game.
+            
+            Since Action is compiled to a const int when a mod is built, any changes to the
+            Action enum will break direct references to Action.NumActions. Use this property
+            instead to always use the intended "no action" value.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Actions.PAction.DefaultBinding">
+            <summary>
+            The default key binding for this action. Not necessarily the current key binding.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Actions.PAction.Identifier">
+            <summary>
+            The action's non-localized identifier. Something like YOURMOD.CATEGORY.ACTIONNAME.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Actions.PAction.id">
+            <summary>
+            The action's ID. This ID is assigned internally upon register and used for PLib
+            indexing. Even if you somehow obtain it in your mod, it is not to be used!
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Actions.PAction.Title">
+            <summary>
+            The action's title.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Actions.PAction.GetKAction">
+            <summary>
+            Retrieves the Klei action for this PAction.
+            </summary>
+            <returns>The Klei action for use in game functions.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.Actions.PActionManager">
+            <summary>
+            Manages PAction functionality which must be single instance.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Actions.PActionManager.CATEGORY">
+            <summary>
+            The category used for all PLib keys.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Actions.PActionManager.VERSION">
+            <summary>
+            The version of this component. Uses the running PLib version.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Actions.PActionManager.Instance">
+            <summary>
+            The instantiated copy of this class.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Actions.PActionManager.AssignKeyBindings">
+            <summary>
+            Assigns the key bindings to each Action when they are needed.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Actions.PActionManager.ExtendFlags(System.Boolean[],System.Int32)">
+            <summary>
+            Extends the action flags array to the new maximum length.
+            </summary>
+            <param name="oldActionFlags">The old flags array.</param>
+            <param name="newMax">The minimum length.</param>
+            <returns>The new action flags array.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Actions.PActionManager.FindKeyBinding(System.Collections.Generic.IEnumerable{BindingEntry},Action)">
+            <summary>
+            Checks to see if an action is already bound to a key.
+            </summary>
+            <param name="currentBindings">The current key bindings.</param>
+            <param name="action">The action to look up.</param>
+            <returns>true if the action already has a binding assigned, or false otherwise.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Actions.PActionManager.GetBindingTitle(System.String,System.String)">
+            <summary>
+            Retrieves a Klei key binding title.
+            </summary>
+            <param name="category">The category of the key binding.</param>
+            <param name="item">The key binding to retrieve.</param>
+            <returns>The Strings entry describing this key binding.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Actions.PActionManager.GetExtraKeycodeLocalized(KKeyCode)">
+            <summary>
+            Retrieves a "localized" (if PLib is localized) description of additional key codes
+            from the KKeyCode enumeration, to avoid warning spam on popular keybinds like
+            arrow keys, delete, home, and so forth.
+            </summary>
+            <param name="code">The key code.</param>
+            <returns>A description of that key code, or null if no localization is found.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Actions.PActionManager.LogKeyBind(System.String)">
+            <summary>
+            Logs a message encountered by the PLib key binding system.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Actions.PActionManager.LogKeyBindWarning(System.String)">
+            <summary>
+            Logs a warning encountered by the PLib key binding system.
+            </summary>
+            <param name="message">The warning message.</param>
+        </member>
+        <member name="F:PeterHan.PLib.Actions.PActionManager.actions">
+            <summary>
+            Queued key binds which are resolved on load.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Actions.PActionManager.maxAction">
+            <summary>
+            The maximum action index of any custom action registered across all mods.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Actions.PActionManager.#ctor">
+            <summary>
+            Creates a new action manager used to create and assign custom actions. Due to the
+            timing of when the user's key bindings are loaded, all actions must be added in
+            OnLoad().
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Actions.PActionManager.CreateAction(System.String,LocString,PeterHan.PLib.Actions.PKeyBinding)">
+            <summary>
+            Registers a PAction with the action manager.
+            
+            This call should occur after PUtil.InitLibrary() during the mod OnLoad(). If called
+            earlier, it may fail with InvalidOperationException, and if called later, the
+            user's custom key bind (if applicable) will be discarded.
+            </summary>
+            <param name="identifier">The identifier for this action.</param>
+            <param name="title">The action's title. If null, the default value from
+            STRINGS.INPUT_BINDINGS.PLIB.identifier will be used instead.</param>
+            <param name="binding">The default key binding for this action. If null, no key will
+            be bound by default, but the user can set a key bind.</param>
+            <returns>The action thus registered.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Actions.PActionManager.GetMaxAction">
+            <summary>
+            Returns the maximum length of the Action enum, including custom actions. If no
+            actions are defined, returns NumActions - 1 since NumActions is reserved in the
+            base game.
+            
+            This value will not be accurate until all mods have loaded and key binds
+            registered (AfterLayerableLoad or later such as BeforeDbInit).
+            </summary>
+            <returns>The maximum length required to represent all Actions.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Actions.PActionManager.UpdateMaxAction">
+            <summary>
+            Updates the maximum action for this instance.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Actions.PKeyBinding">
+            <summary>
+            Represents a single key binding to an action.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Actions.PKeyBinding.GamePadButton">
+            <summary>
+            The gamepad button to bind.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Actions.PKeyBinding.Key">
+            <summary>
+            The key code.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Actions.PKeyBinding.Modifiers">
+            <summary>
+            The modifier code.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Actions.PToolMode">
+            <summary>
+            A tool mode used in custom tool menus. Shown in the options in the bottom right.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Actions.PToolMode.PopulateMenu(ToolParameterMenu,System.Collections.Generic.ICollection{PeterHan.PLib.Actions.PToolMode})">
+            <summary>
+            Sets up tool options in the tool parameter menu.
+            </summary>
+            <param name="menu">The menu to configure.</param>
+            <param name="options">The available modes.</param>
+            <returns>A dictionary which is updated in real time to contain the actual state of each mode.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Actions.PToolMode.RegisterTool``1(PlayerController)">
+            <summary>
+            Registers a tool with the game. It still must be added to a tool collection to be
+            visible.
+            </summary>
+            <typeparam name="T">The tool type to register.</typeparam>
+            <param name="controller">The player controller which will be its parent; consider
+            using in a postfix on PlayerController.OnPrefabInit.</param>
+        </member>
+        <member name="P:PeterHan.PLib.Actions.PToolMode.Key">
+            <summary>
+            A unique key used to identify this mode.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Actions.PToolMode.State">
+            <summary>
+            The current state of this tool mode.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Actions.PToolMode.Title">
+            <summary>
+            The title displayed on-screen for this mode.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Actions.PToolMode.#ctor(System.String,LocString,ToolParameterMenu.ToggleState)">
+            <summary>
+            Creates a new tool mode entry.
+            </summary>
+            <param name="key">The key which identifies this tool mode.</param>
+            <param name="title">The title to be displayed. If null, the title will be taken
+            from the default location in STRINGS.UI.TOOLS.FILTERLAYERS.</param>
+            <param name="state">The initial state, default Off.</param>
+        </member>
+    </members>
+</doc>

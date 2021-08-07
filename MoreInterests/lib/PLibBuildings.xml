@@ -1,0 +1,550 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PLibBuildings</name>
+    </assembly>
+    <members>
+        <member name="T:PeterHan.PLib.Buildings.BuildIngredient">
+            <summary>
+            An ingredient to be used in a building.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.BuildIngredient.Material">
+            <summary>
+            The material tag name.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.BuildIngredient.Quantity">
+            <summary>
+            The quantity required in kg.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Buildings.ColoredRangeVisualizer">
+            <summary>
+            A visualizer that colors cells with an overlay when a building is selected or being
+            previewed.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Buildings.ColoredRangeVisualizer.ANIM_NAME">
+            <summary>
+            The anim name to use when visualizing.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Buildings.ColoredRangeVisualizer.PRE_ANIMS">
+            <summary>
+            The animations to play when the visualization is created.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Buildings.ColoredRangeVisualizer.POST_ANIM">
+            <summary>
+            The animation to play when the visualization is destroyed.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.ColoredRangeVisualizer.Layer">
+            <summary>
+            The layer on which to display the visualizer.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Buildings.ColoredRangeVisualizer.cells">
+            <summary>
+            The cells where animations are being displayed.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.ColoredRangeVisualizer.CreateVisualizers">
+            <summary>
+            Creates or updates the visualizers as necessary.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.ColoredRangeVisualizer.OnCellChange">
+            <summary>
+            Called when cells are changed in the building radius.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.ColoredRangeVisualizer.OnRotated(System.Object)">
+            <summary>
+            Called when the object is rotated.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.ColoredRangeVisualizer.OnSelect(System.Object)">
+            <summary>
+            Called when the object is selected.
+            </summary>
+            <param name="data">true if selected, or false if deselected.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.ColoredRangeVisualizer.RemoveVisualizers">
+            <summary>
+            Removes all of the visualizers.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.ColoredRangeVisualizer.RotateOffsetCell(System.Int32,CellOffset)">
+            <summary>
+            Calculates the offset cell from the specified starting point, including the
+            rotation of this object.
+            </summary>
+            <param name="baseCell">The starting cell.</param>
+            <param name="offset">The offset if the building had its default rotation.</param>
+            <returns>The computed destination cell.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.ColoredRangeVisualizer.VisualizeCells(System.Collections.Generic.ICollection{PeterHan.PLib.Buildings.ColoredRangeVisualizer.VisCellData})">
+            <summary>
+            Called when cell visualizations need to be updated. Visualized cells should be
+            added to the collection supplied as an argument.
+            </summary>
+            <param name="newCells">The cells which should be visualized.</param>
+        </member>
+        <member name="T:PeterHan.PLib.Buildings.ColoredRangeVisualizer.VisCellData">
+            <summary>
+            Stores the data about a particular cell, including its anim controller and tint
+            color.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.ColoredRangeVisualizer.VisCellData.Cell">
+            <summary>
+            The target cell.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.ColoredRangeVisualizer.VisCellData.Controller">
+            <summary>
+            The anim controller for this cell.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.ColoredRangeVisualizer.VisCellData.Tint">
+            <summary>
+            The tint used for this cell.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.ColoredRangeVisualizer.VisCellData.#ctor(System.Int32)">
+            <summary>
+            Creates a visualized cell.
+            </summary>
+            <param name="cell">The cell to visualize.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.ColoredRangeVisualizer.VisCellData.#ctor(System.Int32,UnityEngine.Color)">
+            <summary>
+            Creates a visualized cell.
+            </summary>
+            <param name="cell">The cell to visualize.</param>
+            <param name="tint">The color to tint it.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.ColoredRangeVisualizer.VisCellData.CreateController(Grid.SceneLayer)">
+            <summary>
+            Creates the anim controller for this cell.
+            </summary>
+            <param name="sceneLayer">The layer on which to display the animation.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.ColoredRangeVisualizer.VisCellData.Destroy">
+            <summary>
+            Destroys the anim controller for this cell.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Buildings.ConduitConnection">
+            <summary>
+            Represents a pipe connection to a building.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.ConduitConnection.Location">
+            <summary>
+            The conduit location.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.ConduitConnection.Type">
+            <summary>
+            The conduit type.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Buildings.PBuilding">
+            <summary>
+            A class used for creating new buildings. Abstracts many of the details to allow them
+            to be used across different game versions.
+            </summary>
+            <summary>
+            Utility methods for creating new buildings.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.AddAfter">
+            <summary>
+            The building ID which should precede this building ID in the plan menu.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.AlwaysOperational">
+            <summary>
+            Whether the building is always operational.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.Animation">
+            <summary>
+            The building's animation.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.AudioCategory">
+            <summary>
+            The audio sounds used when placing/completing the building.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.AudioSize">
+            <summary>
+            The audio volume used when placing/completing the building.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.Breaks">
+            <summary>
+            Whether this building can break down.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.Category">
+            <summary>
+            The build menu category.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.ConstructionTime">
+            <summary>
+            The construction time in seconds on x1 speed.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.Decor">
+            <summary>
+            The decor of this building.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.Description">
+            <summary>
+            The building description.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.EffectText">
+            <summary>
+            Text describing the building's effect.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.Entombs">
+            <summary>
+            Whether this building can entomb.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.ExhaustHeatGeneration">
+            <summary>
+            The heat generation from the exhaust in kDTU/s.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.Floods">
+            <summary>
+            Whether this building can flood.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.DefaultPriority">
+            <summary>
+            The default priority of this building, with null to not add a priority.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.HeatGeneration">
+            <summary>
+            The self-heating when active in kDTU/s.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.Height">
+            <summary>
+            The building height.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.HP">
+            <summary>
+            The building HP until it breaks down.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.Ingredients">
+            <summary>
+            The ingredients required for construction.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.ID">
+            <summary>
+            The building ID.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.IndustrialMachine">
+            <summary>
+            Whether this building is an industrial machine.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.InputConduits">
+            <summary>
+            The input conduits.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.IsSolidTile">
+            <summary>
+            Whether this building is (or can be) a solid tile.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.LogicIO">
+            <summary>
+            The logic ports.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.Name">
+            <summary>
+            The building name.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.Noise">
+            <summary>
+            The noise of this building (not used by Klei).
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.ObjectLayer">
+            <summary>
+            The layer for this building.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.OutputConduits">
+            <summary>
+            The output conduits.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.OverheatTemperature">
+            <summary>
+            If null, the building does not overheat; otherwise, it overheats at this
+            temperature in K.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.Placement">
+            <summary>
+            The location where this building may be built.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.PowerInput">
+            <summary>
+            If null, the building has no power input; otherwise, it uses this much power.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.PowerOutput">
+            <summary>
+            If null, the building has no power output; otherwise, it provides this much power.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.RotateMode">
+            <summary>
+            The directions this building can face.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.SceneLayer">
+            <summary>
+            The scene layer for this building.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.Tech">
+            <summary>
+            The technology name required to unlock the building.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.ViewMode">
+            <summary>
+            The view mode used when placing this building.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuilding.Width">
+            <summary>
+            The building width.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Buildings.PBuilding.addedPlan">
+            <summary>
+            Whether the building was added to the plan menu.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Buildings.PBuilding.addedStrings">
+            <summary>
+            Whether the strings were added.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Buildings.PBuilding.addedTech">
+            <summary>
+            Whether the technology wes added.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.PBuilding.#ctor(System.String,System.String)">
+            <summary>
+            Creates a new building. All buildings thus created must be registered using
+            PBuilding.Register and have an appropriate IBuildingConfig class.
+            
+            Building should be created in OnLoad or a post-load patch (not in static
+            initializers) to give the localization framework time to patch the LocString
+            containing the building name and description.
+            </summary>
+            <param name="id">The building ID.</param>
+            <param name="name">The building name.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.PBuilding.CreateDef">
+            <summary>
+            Creates the building def from this class.
+            </summary>
+            <returns>The Klei building def.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.PBuilding.ConfigureBuildingTemplate(UnityEngine.GameObject)">
+            <summary>
+            Configures the building template of this building. Should be called in
+            ConfigureBuildingTemplate.
+            </summary>
+            <param name="go">The game object to configure.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.PBuilding.CreateLogicPorts(UnityEngine.GameObject)">
+            <summary>
+            Populates the logic ports of this building. Must be used <b>after</b> the
+            PBuilding.DoPostConfigureComplete method if logic ports are required.
+            
+            Should be called in DoPostConfigureComplete, DoPostConfigurePreview, and
+            DoPostConfigureUnderConstruction.
+            </summary>
+            <param name="go">The game object to configure.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.PBuilding.DoPostConfigureComplete(UnityEngine.GameObject)">
+            <summary>
+            Performs the post-configure complete steps that this building object can do.
+            Not exhaustive! Other components must likely be added.
+            
+            This method does NOT add the logic ports. Use CreateLogicPorts to do so,
+            <b>after</b> this method has been invoked.
+            </summary>
+            <param name="go">The game object to configure.</param>
+        </member>
+        <member name="F:PeterHan.PLib.Buildings.PBuilding.DEFAULT_CATEGORY">
+            <summary>
+            The default building category.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.PBuilding.ApplyAlwaysOperational(UnityEngine.GameObject)">
+            <summary>
+            Makes the building always operational.
+            </summary>
+            <param name="go">The game object to configure.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.PBuilding.CompatLogicPort(LogicPortSpriteType,CellOffset)">
+            <summary>
+            Creates a logic port, in a method compatible with both the new and old Automation
+            updates. The port will have the default strings which fit well with the
+            LogicOperationalController.
+            </summary>
+            <returns>A logic port compatible with both editions.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.PBuilding.AddPlan">
+            <summary>
+            Adds the building to the plan menu.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.PBuilding.AddPlanToCategory(PlanScreen.PlanInfo)">
+            <summary>
+            Adds a building to a specific plan menu.
+            </summary>
+            <param name="menu">The menu to which to add the building.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.PBuilding.AddStrings">
+            <summary>
+            Adds the building strings to the strings list.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.PBuilding.AddTech">
+            <summary>
+            Adds the building tech to the tech tree.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.PBuilding.SplitLogicPorts(UnityEngine.GameObject)">
+            <summary>
+            Splits up logic input/output ports and configures the game object with them.
+            </summary>
+            <param name="go">The game object to configure.</param>
+        </member>
+        <member name="T:PeterHan.PLib.Buildings.PBuildingManager">
+            <summary>
+            Manages PLib buildings to break down PBuilding into a more reasonable sized class.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Buildings.PBuildingManager.VERSION">
+            <summary>
+            The version of this component. Uses the running PLib version.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PBuildingManager.Instance">
+            <summary>
+            The instantiated copy of this class.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.PBuildingManager.AddExistingBuildingToTech(System.String,System.String)">
+            <summary>
+            Immediately adds an <i>existing</i> building ID to an existing technology ID in the
+            tech tree.
+            
+            Do <b>not</b> use this method on buildings registered through PBuilding as they
+            are added automatically.
+            
+            This method must be used in a Db.Initialize postfix patch or RunAt.AfterDbInit
+            PPatchManager method/patch.
+            </summary>
+            <param name="tech">The technology tree node ID.</param>
+            <param name="id">The building ID to add to that node.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.PBuildingManager.LogBuildingDebug(System.String)">
+            <summary>
+            Logs a message encountered by the PLib building system.
+            </summary>
+            <param name="message">The debug message.</param>
+        </member>
+        <member name="F:PeterHan.PLib.Buildings.PBuildingManager.buildings">
+            <summary>
+            The buildings which need to be registered.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.PBuildingManager.#ctor">
+            <summary>
+            Creates a building manager to register PLib buildings.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.PBuildingManager.AddAllStrings">
+            <summary>
+            Adds the strings for every registered building in all mods to the database.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.PBuildingManager.AddStrings">
+            <summary>
+            Adds the strings for each registered building in this mod to the database.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.PBuildingManager.AddAllTechs">
+            <summary>
+            Adds the techs for every registered building in all mods to the database.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.PBuildingManager.AddTechs">
+            <summary>
+            Adds the techs for each registered building in this mod to the database.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Buildings.PBuildingManager.Register(PeterHan.PLib.Buildings.PBuilding)">
+            <summary>
+            Registers a building to properly display its name, description, and tech tree
+            entry. PLib must be initialized using InitLibrary before using this method. Each
+            building should only be registered once, either in OnLoad or a post-load patch.
+            </summary>
+            <param name="building">The building to register.</param>
+        </member>
+        <member name="T:PeterHan.PLib.Buildings.PBuildingManager.BuildingTechRegistration">
+            <summary>
+            A Patch Manager patch which registers all PBuilding technologies.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Buildings.PowerRequirement">
+            <summary>
+            Stores related information about a building's power requirements.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PowerRequirement.MaxWattage">
+            <summary>
+            The maximum building wattage.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Buildings.PowerRequirement.PlugLocation">
+            <summary>
+            The location of the plug related to the foundation tile.
+            </summary>
+        </member>
+    </members>
+</doc>

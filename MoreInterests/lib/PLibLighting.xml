@@ -1,0 +1,387 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PLibLighting</name>
+    </assembly>
+    <members>
+        <member name="T:PeterHan.PLib.Lighting.ILightShape">
+            <summary>
+            An interface describing local and remote instances of PLightShape.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Lighting.ILightShape.Identifier">
+            <summary>
+            The light shape identifier.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Lighting.ILightShape.KleiLightShape">
+            <summary>
+            The Klei LightShape represented by this light shape, used in Light2D definitions.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Lighting.ILightShape.RayMode">
+            <summary>
+            The raycast mode used by this light shape. (-1) if no rays are to be emitted.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Lighting.ILightShape.FillLight(PeterHan.PLib.Lighting.LightingArgs)">
+            <summary>
+            Invokes the light handler with the provided light information.
+            </summary>
+            <param name="args">The arguments passed to the user light handler.</param>
+        </member>
+        <member name="T:PeterHan.PLib.Lighting.LightingArgs">
+            <summary>
+            Arguments which are passed to lighting callbacks to perform lighting calculations.
+            
+            The range is the light radius supplied during the Light2D creation; do not light up
+            tiles outside of this radius (measured by taxicab distance to SourceCell)!
+            
+            The source cell is the cell nearest to where the Light2D is currently located.
+            
+            Use the IDictionary interface to store the relative brightness of cells by their cell
+            location. These values should be between 0 and 1 normally, with the maximum brightness
+            being set by the intensity parameter of the Light2D.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Lighting.LightingArgs.Brightness">
+            <summary>
+            The location where lighting results are stored.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Lighting.LightingArgs.Range">
+            <summary>
+            The maximum range to use for cell lighting. Do not light up cells beyond this
+            range from SourceCell.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Lighting.LightingArgs.Source">
+            <summary>
+            The source of the light.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Lighting.LightingArgs.SourceCell">
+            <summary>
+            The originating cell. Actual lighting can begin elsewhere, but the range limit is
+            measured from this cell.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Lighting.LightingPatches">
+            <summary>
+            Contains all patches (many!) required by the PLib Lighting subsystem. Only applied by
+            the latest version of PLightManager.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Lighting.LightingPatches.AddToGrid_Postfix">
+            <summary>
+            Applied to LightGridEmitter to unattribute lighting sources.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Lighting.LightingPatches.AddToScenePartitioner_Prefix(Light2D,HandleVector{System.Int32}.Handle@,HandleVector{System.Int32}.Handle@)">
+            <summary>
+            Applied to Light2D to properly attribute lighting sources.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Lighting.LightingPatches.AddScenePartitioner(Light2D,HandleVector{System.Int32}.Handle@,HandleVector{System.Int32}.Handle@)">
+            <summary>
+            Replaces the scene partitioner method to register lights for tile changes in
+            their active radius.
+            </summary>
+            <param name="instance">The light to register.</param>
+            <param name="solidPart">The solid partitioner registered.</param>
+            <param name="liquidPart">The liquid partitioner registered.</param>
+            <returns>true if registered, or false if not.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Lighting.LightingPatches.AddToLayer(Light2D,Vector2I,System.Int32,ScenePartitionerLayer)">
+            <summary>
+            Adds a light's scene change partitioner to a layer.
+            </summary>
+            <param name="instance">The light to add.</param>
+            <param name="minCoords">The coordinates of the upper left corner.</param>
+            <param name="rad">The light "radius" (square).</param>
+            <param name="layer">The layer to add it on.</param>
+            <returns>A handle to the change partitioner, or InvalidHandle if it could not be
+            added.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Lighting.LightingPatches.ApplyPatches(HarmonyLib.Harmony)">
+            <summary>
+            Applies the required lighting related patches.
+            </summary>
+            <param name="plibInstance">The Harmony instance to use for patching.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Lighting.LightingPatches.PatchMethod(System.String)">
+            <summary>
+            Gets a HarmonyMethod instance for manual patching using a method from this class.
+            </summary>
+            <param name="name">The method name.</param>
+            <returns>A reference to that method as a HarmonyMethod for patching.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.Lighting.OctantBuilder">
+            <summary>
+            A builder class which creates default light patterns based on octants.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Lighting.OctantBuilder.ScanOctantFunc">
+            <summary>
+            The delegate type called to run the default DiscreteShadowCaster.ScanOctant.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Lighting.OctantBuilder.OCTANT_SCAN">
+            <summary>
+            The method to call to scan octants.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Lighting.OctantBuilder.Falloff">
+            <summary>
+            The fallout to use when building the light.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Lighting.OctantBuilder.SmoothLight">
+            <summary>
+            If false, uses the default game smoothing. If true, uses better smoothing.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Lighting.OctantBuilder.SourceCell">
+            <summary>
+            The origin cell.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Lighting.OctantBuilder.destination">
+            <summary>
+            The location where light cells are added.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Lighting.OctantBuilder.#ctor(System.Collections.Generic.IDictionary{System.Int32,System.Single},System.Int32)">
+            <summary>
+            Creates a new octant builder.
+            </summary>
+            <param name="destination">The location where the lit cells will be placed.</param>
+            <param name="sourceCell">The origin cell of the light.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Lighting.OctantBuilder.AddOctant(System.Int32,DiscreteShadowCaster.Octant)">
+            <summary>
+            Adds an octant of light.
+            </summary>
+            <param name="range">The range of the light.</param>
+            <param name="octant">The octant to scan.</param>
+            <returns>This object, for call chaining.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.Lighting.PLightManager">
+            <summary>
+            Manages lighting. Instantiated only by the latest PLib version.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Lighting.PLightManager.CastLightDelegate">
+            <summary>
+            Implemented by classes which want to handle lighting calls.
+            </summary>
+            <param name="args">The parameters to use for lighting, and the location to
+            store results. See the LightingArgs class documentation for details.</param>
+        </member>
+        <member name="F:PeterHan.PLib.Lighting.PLightManager.EMPTY_SHAPES">
+            <summary>
+            A singleton empty list instance for default values.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Lighting.PLightManager.VERSION">
+            <summary>
+            The version of this component. Uses the running PLib version.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Lighting.PLightManager.ForceSmoothLight">
+            <summary>
+            If true, enables the smooth light falloff mode even on vanilla lights.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Lighting.PLightManager.Instance">
+            <summary>
+            The instantiated copy of this class.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Lighting.PLightManager.GetDefaultFalloff(System.Single,System.Int32,System.Int32)">
+            <summary>
+            Calculates the brightness falloff as it would be in the stock game.
+            </summary>
+            <param name="falloffRate">The falloff rate to use.</param>
+            <param name="cell">The cell where falloff is being computed.</param>
+            <param name="origin">The light origin cell.</param>
+            <returns>The brightness at that location from 0 to 1.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Lighting.PLightManager.GetSmoothFalloff(System.Single,System.Int32,System.Int32)">
+            <summary>
+            Calculates the brightness falloff similar to the default falloff, but far smoother.
+            Slightly heavier on computation however.
+            </summary>
+            <param name="falloffRate">The falloff rate to use.</param>
+            <param name="cell">The cell where falloff is being computed.</param>
+            <param name="origin">The light origin cell.</param>
+            <returns>The brightness at that location from 0 to 1.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Lighting.PLightManager.LightShapeToRayShape(Light2D)">
+            <summary>
+            Gets the raycasting shape to use for the given light.
+            </summary>
+            <param name="light">The light which is being drawn.</param>
+            <returns>The shape to use for its rays.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Lighting.PLightManager.LogLightingDebug(System.String)">
+            <summary>
+            Logs a message encountered by the PLib lighting system.
+            </summary>
+            <param name="message">The debug message.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Lighting.PLightManager.LogLightingWarning(System.String)">
+            <summary>
+            Logs a warning encountered by the PLib lighting system.
+            </summary>
+            <param name="message">The warning message.</param>
+        </member>
+        <member name="P:PeterHan.PLib.Lighting.PLightManager.CallingObject">
+            <summary>
+            The game object which last requested lighting calculations.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Lighting.PLightManager.brightCache">
+            <summary>
+            The light brightness set by the last lighting brightness request.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Lighting.PLightManager.shapes">
+            <summary>
+            The lighting shapes available, all in this mod's namespace.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Lighting.PLightManager.#ctor">
+            <summary>
+            Creates a lighting manager to register PLib lighting.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Lighting.PLightManager.DestroyLight(LightGridManager.LightGridEmitter)">
+            <summary>
+            Ends a call to lighting update initiated by CreateLight.
+            </summary>
+            <param name="source">The source of the light.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Lighting.PLightManager.GetBrightness(LightGridManager.LightGridEmitter,System.Int32,LightGridManager.LightGridEmitter.State,System.Int32@)">
+            <summary>
+            Gets the brightness at a given cell for the specified light source.
+            </summary>
+            <param name="source">The source of the light.</param>
+            <param name="location">The location to check.</param>
+            <param name="state">The lighting state.</param>
+            <param name="result">The brightness there.</param>
+            <returns>true if that brightness is valid, or false otherwise.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Lighting.PLightManager.GetRayShape(LightShape)">
+            <summary>
+            Checks to see if a light has specified one of the built-in ray options to cast
+            the little yellow rays around it.
+            </summary>
+            <param name="shape">The light shape to check.</param>
+            <returns>The light shape to use for ray casting, or the original shape if it is
+            a stock shape or a light shape not known to PLib Lighting.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Lighting.PLightManager.GetVisibleCells(System.Int32,System.Collections.Generic.IList{System.Int32},System.Int32,LightShape)">
+            <summary>
+            Handles a lighting system call for visible cells. Not used by the normal game as
+            all methods that could reach this call should be patched - exists as a fallback.
+            </summary>
+            <param name="cell">The origin cell.</param>
+            <param name="visiblePoints">The location where lit points will be stored.</param>
+            <param name="range">The light radius.</param>
+            <param name="shape">The light shape.</param>
+            <returns>true if the lighting was handled, or false otherwise.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Lighting.PLightManager.PreviewLight(System.Int32,System.Single,LightShape,System.Int32)">
+            <summary>
+            Creates the preview for a given light.
+            </summary>
+            <param name="origin">The starting cell.</param>
+            <param name="radius">The light radius.</param>
+            <param name="shape">The light shape.</param>
+            <param name="lux">The base brightness in lux.</param>
+            <returns>true if the lighting was handled, or false otherwise.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Lighting.PLightManager.Register(System.String,PeterHan.PLib.Lighting.PLightManager.CastLightDelegate,LightShape)">
+            <summary>
+            Registers a light shape handler.
+            </summary>
+            <param name="identifier">A unique identifier for this shape. If another mod has
+            already registered that identifier, the previous mod will take precedence.</param>
+            <param name="handler">The handler for that shape.</param>
+            <param name="rayMode">The type of visual rays that are displayed from the light.</param>
+            <returns>The light shape which can be used.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Lighting.PLightManager.UpdateLitCells(LightGridManager.LightGridEmitter,LightGridManager.LightGridEmitter.State,System.Collections.Generic.IList{System.Int32})">
+            <summary>
+            Updates the lit cells list.
+            </summary>
+            <param name="source">The source of the light.</param>
+            <param name="state">The light emitter state.</param>
+            <param name="litCells">The location where lit cells will be placed.</param>
+            <returns>true if the lighting was handled, or false otherwise.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.Lighting.PLightManager.CacheEntry">
+            <summary>
+            A cache entry in the light brightness cache.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Lighting.PLightManager.CacheEntry.BaseLux">
+            <summary>
+            The base intensity in lux.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Lighting.PLightManager.CacheEntry.Intensity">
+            <summary>
+            The relative brightness per cell.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Lighting.PLightManager.CacheEntry.Owner">
+            <summary>
+            The owner which initiated the lighting call.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Lighting.PLightShape">
+            <summary>
+            Represents a light shape which can be used by mods.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Lighting.PLightShape.handler">
+            <summary>
+            The handler for this light shape.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Lighting.PLightShape.ShapeID">
+            <summary>
+            The light shape ID.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Lighting.PLightShape.DoFillLight(UnityEngine.GameObject,System.Int32,System.Int32,System.Collections.Generic.IDictionary{System.Int32,System.Single})">
+            <summary>
+            Invokes the light handler with the provided light information.
+            </summary>
+            <param name="source">The source of the light.</param>
+            <param name="cell">The origin cell.</param>
+            <param name="range">The range to fill.</param>
+            <param name="brightness">The location where lit points will be stored.</param>
+        </member>
+        <member name="T:PeterHan.PLib.Lighting.PRemoteLightWrapper">
+            <summary>
+            Wraps a lighting system call from another mod's namespace.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Lighting.PRemoteLightWrapper.LightToInstance(System.Object)">
+            <summary>
+            Creates a light shape instance from another mod.
+            </summary>
+            <param name="other">The object to convert.</param>
+            <returns>A light shape object in this mod's namespace that delegates lighting
+            calls to the other mod if necessary.</returns>
+        </member>
+        <member name="F:PeterHan.PLib.Lighting.PRemoteLightWrapper.fillLight">
+            <summary>
+            The method to call when lighting system handling is requested.
+            </summary>
+        </member>
+    </members>
+</doc>

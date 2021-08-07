@@ -1,0 +1,206 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PLibDatabase</name>
+    </assembly>
+    <members>
+        <member name="T:PeterHan.PLib.Database.PCodexManager">
+            <summary>
+            Handles codex entries for mods by automatically loading YAML entries and subentries for
+            critters and plants from the codex folder in their mod directories.
+            
+            The layerable files loader in the stock game is broken, so this class is required to
+            correctly load new codex entries.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Database.PCodexManager.CREATURES_DIR">
+            <summary>
+            The subfolder from which critter codex entries are loaded.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Database.PCodexManager.PLANTS_DIR">
+            <summary>
+            The subfolder from which plant codex entries are loaded.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Database.PCodexManager.CODEX_FILES">
+            <summary>
+            The file extension used for codex entry/subentries.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Database.PCodexManager.CREATURES_CATEGORY">
+            <summary>
+            The codex category under which critter entries should go.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Database.PCodexManager.PLANTS_CATEGORY">
+            <summary>
+            The codex category under which plant entries should go.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Database.PCodexManager.VERSION">
+            <summary>
+            The version of this component. Uses the running PLib version.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Database.PCodexManager.WIDGET_TAG_MAPPINGS">
+            <summary>
+            Allow access to the private widget tag mappings field.
+            Detouring sadly is not possible because CodexCache is a static class and cannot be
+            a type parameter.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Database.PCodexManager.Instance">
+            <summary>
+            The instantiated copy of this class.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Database.PCodexManager.CollectEntries_Postfix(System.String,System.Collections.Generic.List{CodexEntry},System.String)">
+            <summary>
+            Applied to CodexCache to collect dynamic codex entries from the file system.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Database.PCodexManager.CollectSubEntries_Postfix(System.Collections.Generic.List{SubEntry})">
+            <summary>
+            Applied to CodexCache to collect dynamic codex sub entries from the file system.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Database.PCodexManager.LoadFromDirectory(System.Collections.Generic.ICollection{CodexEntry},System.String,System.String)">
+            <summary>
+            Loads codex entries from the specified directory.
+            </summary>
+            <param name="entries">The location where the data will be placed.</param>
+            <param name="dir">The directory to load.</param>
+            <param name="category">The category to assign to each entry thus loaded.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Database.PCodexManager.LoadFromDirectory(System.Collections.Generic.ICollection{SubEntry},System.String)">
+            <summary>
+            Loads codex subentries from the specified directory.
+            </summary>
+            <param name="entries">The location where the data will be placed.</param>
+            <param name="dir">The directory to load.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Database.PCodexManager.YamlParseErrorCB(Klei.YamlIO.Error,System.Boolean)">
+            <summary>
+            A callback function for the YAML parser to process errors that it throws.
+            </summary>
+            <param name="error">The YAML parsing error</param>
+        </member>
+        <member name="F:PeterHan.PLib.Database.PCodexManager.creaturePaths">
+            <summary>
+            The paths for creature codex entries.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Database.PCodexManager.plantPaths">
+            <summary>
+            The paths for plant codex entries.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Database.PCodexManager.LoadEntries(System.String)">
+            <summary>
+            Loads all codex entries for all mods registered.
+            </summary>
+            <param name="category">The codex category under which these data entries should be loaded.</param>
+            <returns>The list of entries that were loaded.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Database.PCodexManager.LoadSubEntries">
+            <summary>
+            Loads all codex subentries for all mods registered.
+            </summary>
+            <returns>The list of subentries that were loaded.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Database.PCodexManager.RegisterCreatures(System.Reflection.Assembly)">
+            <summary>
+            Registers the calling mod as having custom creature codex entries. The entries will
+            be read from the mod directory in the "codex/Creatures" subfolder. If the argument
+            is omitted, the calling assembly is registered.
+            </summary>
+            <param name="assembly">The assembly to register as having creatures.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Database.PCodexManager.RegisterPlants(System.Reflection.Assembly)">
+            <summary>
+            Registers the calling mod as having custom plant codex entries. The entries will
+            be read from the mod directory in the "codex/Plants" subfolder. If the argument
+            is omitted, the calling assembly is registered.
+            </summary>
+            <param name="assembly">The assembly to register as having creatures.</param>
+        </member>
+        <member name="T:PeterHan.PLib.Database.PDatabaseUtils">
+            <summary>
+            Functions which deal with entries in the game database and strings.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Database.PDatabaseUtils.AddColonyAchievement(Database.ColonyAchievement)">
+            <summary>
+            Adds a colony achievement to the colony summary screen. Must be invoked after the
+            database is initialized (Db.Initialize() postfix recommended).
+            
+            Note that achievement structures significantly changed from Vanilla to the DLC.
+            </summary>
+            <param name="achievement">The achievement to add.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Database.PDatabaseUtils.AddStatusItemStrings(System.String,System.String,System.String,System.String)">
+            <summary>
+            Adds the name and description for a status item.
+            
+            Must be used before the StatusItem is first instantiated.
+            </summary>
+            <param name="id">The status item ID.</param>
+            <param name="category">The status item category.</param>
+            <param name="name">The name to display in the UI.</param>
+            <param name="desc">The description to display in the UI.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Database.PDatabaseUtils.LogDatabaseDebug(System.String)">
+            <summary>
+            Logs a message encountered by the PLib database system.
+            </summary>
+            <param name="message">The debug message.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Database.PDatabaseUtils.LogDatabaseWarning(System.String)">
+            <summary>
+            Logs a warning encountered by the PLib database system.
+            </summary>
+            <param name="message">The warning message.</param>
+        </member>
+        <member name="T:PeterHan.PLib.Database.PLocalization">
+            <summary>
+            Handles localization for mods by automatically loading po files from the translations
+            folder in their mod directories.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Database.PLocalization.TRANSLATIONS_DIR">
+            <summary>
+            The subfolder from which translations will be loaded.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Database.PLocalization.VERSION">
+            <summary>
+            The version of this component. Uses the running PLib version.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Database.PLocalization.Localize(System.Reflection.Assembly,Localization.Locale)">
+            <summary>
+            Localizes the specified mod assembly.
+            </summary>
+            <param name="modAssembly">The assembly to localize.</param>
+            <param name="locale">The locale file name to be used.</param>
+        </member>
+        <member name="F:PeterHan.PLib.Database.PLocalization.toLocalize">
+            <summary>
+            The assemblies to be localized.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Database.PLocalization.DumpAll">
+            <summary>
+            Debug dumps the translation templates for ALL registered PLib localized mods.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Database.PLocalization.Register(System.Reflection.Assembly)">
+            <summary>
+            Registers the specified assembly for automatic PLib localization. If the argument
+            is omitted, the calling assembly is registered.
+            </summary>
+            <param name="assembly">The assembly to register for PLib localization.</param>
+        </member>
+    </members>
+</doc>

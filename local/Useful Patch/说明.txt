@@ -1,0 +1,3 @@
+移除了植物掉落（assembly-cshape内部变动，改方法改成了私有的无法获取到）
+移除了超级矿机 （反编译出来的代码有明显的问题，不会改）
+AdvanceResearchCenterWaterInput 會崩潰

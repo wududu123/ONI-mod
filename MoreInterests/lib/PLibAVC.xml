@@ -1,0 +1,342 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PLibAVC</name>
+    </assembly>
+    <members>
+        <member name="T:PeterHan.PLib.AVC.IModVersionChecker">
+            <summary>
+            Implemented by classes which can check the current mod version and detect if it is out
+            of date.
+            </summary>
+        </member>
+        <member name="E:PeterHan.PLib.AVC.IModVersionChecker.OnVersionCheckCompleted">
+            <summary>
+            The event to subscribe for when the check completes.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.AVC.IModVersionChecker.CheckVersion(KMod.Mod)">
+            <summary>
+            Checks the mod and reports if it is out of date. The mod's current version as
+            reported by its mod_info.yaml file is available on the packagedModInfo member.
+            
+            This method might not be run on the foreground thread. Do not create new behaviors
+            or components without a coroutine to an existing GameObject.
+            </summary>
+            <param name="mod">The mod whose version is being checked.</param>
+            <returns>true if the version check has started, or false if it could not be
+            started, which will trigger the next version checker in line.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.AVC.JsonURLVersionChecker">
+            <summary>
+            Checks the mod version using a URL to a JSON file. The file at this URL must resolve
+            to a JSON file which can deserialize to the JsonURLVersionChecker.ModVersions class.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.AVC.JsonURLVersionChecker.REQUEST_TIMEOUT">
+            <summary>
+            The timeout in seconds for the web request before declaring the check as failed.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.AVC.JsonURLVersionChecker.JsonVersionURL">
+            <summary>
+            The URL to query for checking the mod version.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.AVC.JsonURLVersionChecker.OnRequestFinished(UnityEngine.Networking.UnityWebRequest,KMod.Mod)">
+            <summary>
+            When a web request completes, triggers the handler for the next updater.
+            </summary>
+            <param name="request">The JSON web request data.</param>
+            <param name="mod">The mod that needs to be checked.</param>
+        </member>
+        <member name="M:PeterHan.PLib.AVC.JsonURLVersionChecker.ParseModVersion(KMod.Mod,PeterHan.PLib.AVC.JsonURLVersionChecker.ModVersions)">
+            <summary>
+            Parses the JSON file and looks up the version for the specified mod.
+            </summary>
+            <param name="mod">The mod's static ID.</param>
+            <param name="versions">The data from the web JSON file.</param>
+            <returns>The results of the update, or null if the mod could not be found in the
+            JSON.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.AVC.JsonURLVersionChecker.ModVersions">
+            <summary>
+            The serialization type for JSONURLVersionChecker. Allows multiple mods to query
+            the same URL.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.AVC.JsonURLVersionChecker.ModVersion">
+            <summary>
+            Represents the current version of each mod.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.AVC.JsonURLVersionChecker.ModVersion.staticID">
+            <summary>
+            The mod's static ID, as reported by its mod.yaml. If a mod does not specify its
+            static ID, it gets the default ID mod.label.id + "_" + mod.label.
+            distribution_platform.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.AVC.JsonURLVersionChecker.ModVersion.version">
+            <summary>
+            The mod's current version.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.AVC.ModVersionCheckResults">
+            <summary>
+            The results of checking the mod version.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.AVC.ModVersionCheckResults.IsUpToDate">
+            <summary>
+            true if the mod is up to date, or false if it is out of date.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.AVC.ModVersionCheckResults.ModChecked">
+            <summary>
+            The mod whose version was queried. The current mod version is available on this
+            mod through its packagedModInfo.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.AVC.ModVersionCheckResults.NewVersion">
+            <summary>
+            The new version of this mod. If it is not available, it can be null, even if
+            IsUpdated is false. Not relevant if IsUpToDate reports true.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.AVC.PVersionCheck">
+            <summary>
+            Implements a basic automatic version check, using either Steam or an external website.
+            
+            The version of the current mod is taken from the mod version attribute of the provided
+            mod.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.AVC.PVersionCheck.OnVersionCheckComplete">
+            <summary>
+            The delegate type used when a background version check completes.
+            </summary>
+            <param name="result">The results of the check. If null, the check has failed,
+            and the next version should be tried.</param>
+        </member>
+        <member name="P:PeterHan.PLib.AVC.PVersionCheck.Instance">
+            <summary>
+            The instantiated copy of this class.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.AVC.PVersionCheck.VERSION">
+            <summary>
+            The version of this component. Uses the running PLib version.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.AVC.PVersionCheck.GetCurrentVersion(System.Reflection.Assembly)">
+            <summary>
+            Gets the reported version of the specified assembly.
+            </summary>
+            <param name="assembly">The assembly to check.</param>
+            <returns>The assembly's file version, or if that is unset, its assembly version.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.AVC.PVersionCheck.GetCurrentVersion(KMod.Mod)">
+            <summary>
+            Gets the current version of the mod. If the version is specified in mod_info.yaml,
+            that version is reported. Otherwise, the assembly file version (and failing that,
+            the assembly version) of the assembly defining the mod's first UserMod2 instance
+            is reported.
+            
+            This method will only work after mods have loaded.
+            </summary>
+            <param name="mod">The mod to check.</param>
+            <returns>The current version of that mod.</returns>
+        </member>
+        <member name="F:PeterHan.PLib.AVC.PVersionCheck.checkVersions">
+            <summary>
+            The mods whose version will be checked.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.AVC.PVersionCheck.results">
+            <summary>
+            The location where the outcome of mod version checking will be stored.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.AVC.PVersionCheck.AddWarningIfOutdated(System.Object)">
+            <summary>
+            Adds a warning to the mods screen if a mod is outdated.
+            </summary>
+            <param name="modEntry">The mod entry to modify.</param>
+        </member>
+        <member name="M:PeterHan.PLib.AVC.PVersionCheck.AddWarningIfOutdated(PeterHan.PLib.AVC.ModVersionCheckResults,LocText)">
+            <summary>
+            Adds a warning to a mod version label if it is outdated.
+            </summary>
+            <param name="data">The updated mod version.</param>
+            <param name="versionText">The current mod version label.</param>
+        </member>
+        <member name="M:PeterHan.PLib.AVC.PVersionCheck.Register(KMod.UserMod2,PeterHan.PLib.AVC.IModVersionChecker)">
+            <summary>
+            Registers the specified mod for automatic version checking. Mods will be registered
+            using their static ID, so to avoid the default ID from being used instead, set this
+            attribute in mod.yaml.
+            
+            The same mod can be registered multiple times with different methods to check the
+            mod versions. The methods will be attempted in order from first registered to last.
+            However, the same mod must not be registered multiple times in different instances
+            of PVersionCheck.
+            </summary>
+            <param name="mod">The mod instance to check.</param>
+            <param name="checker">The method to use for checking the mod version.</param>
+        </member>
+        <member name="M:PeterHan.PLib.AVC.PVersionCheck.ReportResults">
+            <summary>
+            Reports the results of the version check.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.AVC.PVersionCheck.RunVersionCheck">
+            <summary>
+            Starts the automatic version check for all mods.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.AVC.PVersionCheck.AllVersionCheckTask">
+            <summary>
+            Checks each mod's version one at a time to avoid saturating the network with
+            generally nonessential traffic (in the case of yaml/json checkers).
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.AVC.PVersionCheck.AllVersionCheckTask.checkAllVersions">
+            <summary>
+            A list of actions that will check each version in turn.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.AVC.PVersionCheck.AllVersionCheckTask.index">
+            <summary>
+            The current location in the list.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.AVC.PVersionCheck.AllVersionCheckTask.parent">
+            <summary>
+            Handles version check result reporting when complete.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.AVC.PVersionCheck.AllVersionCheckTask.Run">
+            <summary>
+            Runs all checks and fires the callback when complete.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.AVC.PVersionCheck.VersionCheckMethods">
+            <summary>
+            A placeholder class which stores all methods used to check a single mod.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.AVC.PVersionCheck.VersionCheckMethods.Methods">
+            <summary>
+            The methods which will be used to check.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:PeterHan.PLib.AVC.PVersionCheck.VersionCheckMethods.ModToCheck" -->
+        <member name="T:PeterHan.PLib.AVC.SteamVersionChecker">
+            <summary>
+            Checks Steam to see if mods are out of date.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.AVC.SteamVersionChecker.STEAM_UGC_SERVICE">
+            <summary>
+            A reference to the game's version of SteamUGCService, or null if running on the
+            EGS version.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.AVC.SteamVersionChecker.UPDATE_JITTER">
+            <summary>
+            The number of minutes allowed before a mod is considered out of date.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.AVC.SteamVersionChecker.UNIX_EPOCH">
+            <summary>
+            The epoch time for Steam time stamps.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.AVC.SteamVersionChecker.GetLocalLastModified(System.UInt64)">
+            <summary>
+            Gets the last modified date of a mod's local files. The time is returned in UTC.
+            </summary>
+            <param name="id">The mod ID to check.</param>
+            <returns>The date and time of its last modification.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.AVC.SteamVersionChecker.UnixEpochToDateTime(System.UInt64)">
+            <summary>
+            Converts a time from Steam (seconds since Unix epoch) to a C# DateTime.
+            </summary>
+            <param name="timeSeconds">The timestamp since the epoch.</param>
+            <returns>The UTC date and time that it represents.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.AVC.SteamVersionChecker.DoCheckVersion(KMod.Mod)">
+            <summary>
+            Checks the mod on Steam and reports if it is out of date. This helper method
+            avoids a type load error if a non-Steam version of the game is used to load this
+            mod.
+            </summary>
+            <param name="mod">The mod whose version is being checked.</param>
+            <returns>true if the version check has started, or false if it could not be
+            started.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.AVC.VersionCheckTask">
+            <summary>
+            Represents a "task" to check a particular mod for updates.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.AVC.VersionCheckTask.method">
+            <summary>
+            The method which will be used to check.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.AVC.VersionCheckTask.mod">
+            <summary>
+            The mod whose version will be checked.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.AVC.VersionCheckTask.Next">
+            <summary>
+            The next task to run when the check completes, or null to not run any task.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.AVC.VersionCheckTask.results">
+            <summary>
+            The location where the outcome of mod version checking will be stored.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.AVC.VersionCheckTask.OnComplete(PeterHan.PLib.AVC.ModVersionCheckResults)">
+            <summary>
+            Records the result of the mod version check, and runs the next checker in
+            line, from this mod or a different one.
+            </summary>
+            <param name="result">The results from the version check.</param>
+        </member>
+        <member name="M:PeterHan.PLib.AVC.VersionCheckTask.Run">
+            <summary>
+            Runs the version check, and registers a callback to run the next one if
+            it is not null.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.AVC.VersionCheckTask.RunNext">
+            <summary>
+            Runs the next version check.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.AVC.YamlURLVersionChecker">
+            <summary>
+            Checks the mod version using a URL to a YAML file. The file at this URL must resolve
+            to a YAML file of the same format as the mod_info.yaml class.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.AVC.YamlURLVersionChecker.YamlVersionURL">
+            <summary>
+            The URL to query for checking the mod version.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.AVC.YamlURLVersionChecker.OnRequestFinished(UnityEngine.Networking.UnityWebRequest,KMod.Mod)">
+            <summary>
+            When a web request completes, triggers the handler for the next updater.
+            </summary>
+            <param name="request">The YAML web request data.</param>
+            <param name="mod">The mod that needs to be checked.</param>
+        </member>
+    </members>
+</doc>
