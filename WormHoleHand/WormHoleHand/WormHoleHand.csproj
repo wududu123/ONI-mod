@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BFE6B70C-B196-45DC-BF28-31B8FE84ACBA}</ProjectGuid>
+    <ProjectGuid>{20D19538-53D8-4133-AB74-D8387F3BCB09}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SuperGeyser2</RootNamespace>
-    <AssemblyName>SuperGeyser2</AssemblyName>
+    <RootNamespace>WormHoleHand</RootNamespace>
+    <AssemblyName>WormHoleHand</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -65,7 +65,7 @@
   <ItemGroup>
     <Compile Include="Patches.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SuperGeyserClass.cs" />
+    <Compile Include="WormHoleHand.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="mod.yaml">
@@ -75,10 +75,11 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>Copy "$(SolutionDir)\..\SuperGeyser2\SuperGeyser2\bin\Release\SuperGeyser2.dll" "$(SolutionDir)\..\local\SuperGeyser2\"
-Copy "$(SolutionDir)\..\SuperGeyser2\SuperGeyser2\bin\Release\mod.yaml" "$(SolutionDir)\..\local\SuperGeyser2\"
-Copy "$(SolutionDir)\..\SuperGeyser2\SuperGeyser2\bin\Release\mod_info.yaml" "$(SolutionDir)\..\local\SuperGeyser2\"</PostBuildEvent>
+    <PostBuildEvent>Copy "$(SolutionDir)\WormHoleHand\bin\Release\WormHoleHand.dll" "$(SolutionDir)\..\local\WormHoleHand\"
+Copy "$(SolutionDir)\WormHoleHand\bin\Release\mod.yaml" "$(SolutionDir)\..\local\WormHoleHand\"
+Copy "$(SolutionDir)\WormHoleHand\bin\Release\mod_info.yaml" "$(SolutionDir)\..\local\WormHoleHand\"</PostBuildEvent>
   </PropertyGroup>
 </Project>
