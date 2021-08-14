@@ -21,7 +21,7 @@ namespace Useful_Patch
     [HarmonyPatch(typeof (SweepBotStationConfig), "ConfigureBuildingTemplate")]
     public class SweepBotStationConfigUp
     {
-      public static bool Prefix(GameObject go, Tag prefab_tag)
+      public static void Prefix(GameObject go, Tag prefab_tag)
       {
         Prioritizable.AddRef(go);
         Storage storage1 = go.AddComponent<Storage>();
@@ -44,9 +44,10 @@ namespace Useful_Patch
         storage2.fetchCategory = Storage.FetchCategory.StorageSweepOnly;
         storage2.capacityKg = 10000f;
         storage2.allowClearable = true;
-        go.AddOrGet<CharacterOverlay>();
-        go.AddOrGet<SweepBotStation>();
-        return false;
+        storage2.showCapacityStatusItem = true;
+        go.AddOrGet<CharacterOverlay>().shouldShowName = true;
+        go.AddOrGet<SweepBotStation>().SetStorages(storage1, storage2);
+     
       }
     }
   }

@@ -30,14 +30,17 @@ namespace SuperGeyser2
         for (int index = 0; index < __result.Count; ++index)
         {
             Debug.Log(string.Format("GeyserGenericConfig {0}", __result[index].geyserType.id));
-            __result[index].geyserType.minRatePerCycle = __result[index].geyserType.maxRatePerCycle * 10;
-            __result[index].geyserType.maxRatePerCycle = __result[index].geyserType.maxRatePerCycle * 10;
+            __result[index].geyserType.minRatePerCycle = __result[index].geyserType.maxRatePerCycle * 5;
+            __result[index].geyserType.maxRatePerCycle = __result[index].geyserType.maxRatePerCycle * 5;
                     //一个喷发周期秒数
                     __result[index].geyserType.minIterationLength = 1140f;
                     __result[index].geyserType.maxIterationLength = 1140f;
                     //每个周期，喷发的比例
                     __result[index].geyserType.minIterationPercent = 1.0f;
                     __result[index].geyserType.maxIterationPercent = 1.0f;
+                    __result[index].geyserType.minYearPercent = 1.0f;
+                    __result[index].geyserType.maxYearPercent = 1.0f;
+
                 }
 
 
