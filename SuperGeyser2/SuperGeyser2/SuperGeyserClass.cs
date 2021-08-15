@@ -29,9 +29,9 @@ namespace SuperGeyser2
 
         for (int index = 0; index < __result.Count; ++index)
         {
-            Debug.Log(string.Format("GeyserGenericConfig {0}", __result[index].geyserType.id));
-            __result[index].geyserType.minRatePerCycle = __result[index].geyserType.maxRatePerCycle * 5;
-            __result[index].geyserType.maxRatePerCycle = __result[index].geyserType.maxRatePerCycle * 5;
+                    Debug.Log(string.Format("GeyserGenericConfig {0}", __result[index].geyserType.id));
+                    __result[index].geyserType.minRatePerCycle = __result[index].geyserType.maxRatePerCycle * 5;
+                    __result[index].geyserType.maxRatePerCycle = __result[index].geyserType.maxRatePerCycle * 5;
                     //一个喷发周期秒数
                     __result[index].geyserType.minIterationLength = 1140f;
                     __result[index].geyserType.maxIterationLength = 1140f;
@@ -40,8 +40,15 @@ namespace SuperGeyser2
                     __result[index].geyserType.maxIterationPercent = 1.0f;
                     __result[index].geyserType.minYearPercent = 1.0f;
                     __result[index].geyserType.maxYearPercent = 1.0f;
+                    if(__result[index].geyserType.id == "hot_water")
+                    {
+                        __result[index].geyserType.temperature = 293.15f;
+                    }else if (__result[index].geyserType.id == "filthy_water")
+                    {
+                        __result[index].geyserType.temperature = 263.15f;
+                    }
 
-                }
+        }
 
 
 
