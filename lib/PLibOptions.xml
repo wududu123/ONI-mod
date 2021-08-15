@@ -1,0 +1,1231 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PLibOptions</name>
+    </assembly>
+    <members>
+        <member name="T:PeterHan.PLib.Options.ButtonOptionsEntry">
+            <summary>
+            An options entry that displays a button. Not intended to be serializable to the
+            options file, instead declare a read-only property that returns a handler method as
+            an Action in the settings class, e.g:
+            
+            [Option("Click Here!", "Button tool tip")]
+            public System.Action&lt;object&gt; MyButton => Handler;
+            
+            public void Handler() {
+                // ...
+            }
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.ButtonOptionsEntry.value">
+            <summary>
+            The action to invoke when the button is pushed.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Options.CategoryExpandHandler">
+            <summary>
+            Handles events for expanding and contracting options categories.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.CategoryExpandHandler.contents">
+            <summary>
+            The realized panel containing the options.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.CategoryExpandHandler.initialState">
+            <summary>
+            The initial state of the button.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.CategoryExpandHandler.toggle">
+            <summary>
+            The realized toggle button.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.CategoryExpandHandler.#ctor(System.Boolean)">
+            <summary>
+            Creates a new options category.
+            </summary>
+            <param name="initialState">true to start expanded, or false to start collapsed.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.CategoryExpandHandler.OnExpandContract(UnityEngine.GameObject,System.Boolean)">
+            <summary>
+            Fired when the options category is expanded or contracted.
+            </summary>
+            <param name="on">true if the button is on, or false if it is off.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.CategoryExpandHandler.OnHeaderClicked">
+            <summary>
+            Fired when the header is clicked.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.CategoryExpandHandler.OnRealizeHeader(UnityEngine.GameObject)">
+            <summary>
+            Fired when the category label is realized.
+            </summary>
+            <param name="header">The realized header label of the category.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.CategoryExpandHandler.OnRealizePanel(UnityEngine.GameObject)">
+            <summary>
+            Fired when the body is realized.
+            </summary>
+            <param name="panel">The realized body of the category.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.CategoryExpandHandler.OnRealizeToggle(UnityEngine.GameObject)">
+            <summary>
+            Fired when the toggle button is realized.
+            </summary>
+            <param name="toggle">The realized expand/contract button.</param>
+        </member>
+        <member name="T:PeterHan.PLib.Options.CheckboxOptionsEntry">
+            <summary>
+            An options entry which represents bool and displays a check box.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.CheckboxOptionsEntry.check">
+            <summary>
+            true if it is checked, or false otherwise
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.CheckboxOptionsEntry.checkbox">
+            <summary>
+            The realized item checkbox.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Options.CompositeOptionsEntry">
+            <summary>
+            An options entry that encapsulates other options. The category annotation on those
+            objects will be ignored, and the category of the Option attribute on the property
+            that declared those options (to avoid infinite loops) will be used instead.
+            
+            <b>This object is not in the scene graph.</b> Any events in OnRealize will never be
+            invoked, and it is never "built".
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.CompositeOptionsEntry.Create(PeterHan.PLib.Options.IOptionSpec,System.Reflection.PropertyInfo,System.Int32)">
+            <summary>
+            Creates an options entry wrapper for the specified property, iterating its internal
+            fields to create sub-options if needed (recursively).
+            </summary>
+            <param name="info">The property to wrap.</param>
+            <param name="spec">The option title and tool tip.</param>
+            <param name="depth">The current depth of iteration to avoid infinite loops.</param>
+            <returns>An options wrapper, or null if no inner properties are themselves options.</returns>
+        </member>
+        <member name="P:PeterHan.PLib.Options.CompositeOptionsEntry.ChildCount">
+            <summary>
+            Reports the number of options contained inside this one.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.CompositeOptionsEntry.subOptions">
+            <summary>
+            The options encapsulated in this object.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.CompositeOptionsEntry.targetType">
+            <summary>
+            The type of the encapsulated object.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.CompositeOptionsEntry.value">
+            <summary>
+            The object thus wrapped.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.CompositeOptionsEntry.AddField(System.Reflection.PropertyInfo,PeterHan.PLib.Options.IOptionsEntry)">
+            <summary>
+            Adds an options entry object that operates on Option fields of the encapsulated
+            object.
+            </summary>
+            <param name="info">The property that is wrapped.</param>
+            <param name="entry">The entry to add.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.CompositeOptionsEntry.WhenRealized(UnityEngine.GameObject)">
+            <summary>
+            Updates the child objects for the first time when the panel is realized.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Options.ConfigFileAttribute">
+            <summary>
+            An attribute placed on an options class only (will not function on a member property)
+            which denotes the config file name to use for that mod, and allows save/load options
+            to be set.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.ConfigFileAttribute.ConfigFileName">
+            <summary>
+            The configuration file name. If null, the default file name will be used.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.ConfigFileAttribute.IndentOutput">
+            <summary>
+            Whether the output should be indented nicely. Defaults to false for smaller
+            config files.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.ConfigFileAttribute.UseSharedConfigLocation">
+            <summary>
+            If true, the config file will be moved from the mod folder to a folder in the
+            config directory shared across mods. This change preserves the mod configuration
+            across updates, but may not be cleared when the mod is uninstalled. Use with
+            caution.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Options.FloatOptionsEntry">
+            <summary>
+            An options entry which represents float and displays a text field and slider.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.FloatOptionsEntry.DEFAULT_FORMAT">
+            <summary>
+            The format to use if none is provided.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.FloatOptionsEntry.textField">
+            <summary>
+            The realized text field.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.FloatOptionsEntry.value">
+            <summary>
+            The value in the text field.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.FloatOptionsEntry.OnSliderChanged(UnityEngine.GameObject,System.Single)">
+            <summary>
+            Called when the slider's value is changed.
+            </summary>
+            <param name="newValue">The new slider value.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.FloatOptionsEntry.OnTextChanged(UnityEngine.GameObject,System.String)">
+            <summary>
+            Called when the input field's text is changed.
+            </summary>
+            <param name="text">The new text.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.FloatOptionsEntry.Update">
+            <summary>
+            Updates the displayed value.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Options.IntOptionsEntry">
+            <summary>
+            An options entry which represents int and displays a text field and slider.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.IntOptionsEntry.textField">
+            <summary>
+            The realized text field.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.IntOptionsEntry.value">
+            <summary>
+            The value in the text field.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.IntOptionsEntry.OnSliderChanged(UnityEngine.GameObject,System.Single)">
+            <summary>
+            Called when the slider's value is changed.
+            </summary>
+            <param name="newValue">The new slider value.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.IntOptionsEntry.OnTextChanged(UnityEngine.GameObject,System.String)">
+            <summary>
+            Called when the input field's text is changed.
+            </summary>
+            <param name="text">The new text.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.IntOptionsEntry.Update">
+            <summary>
+            Updates the displayed value.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Options.IOptions">
+            <summary>
+            An optional interface which can be implemented to give mods the ability to dynamically
+            add new options at runtime, or to get a notification when options are updated to the
+            options file.
+            
+            This interface is <b>optional</b>. There is no need to implement it to use PLib
+            Options. But if one method is implemented, the other must also be. If not used,
+            OnOptionsChanged should be empty, and CreateOptions should an empty collection.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.IOptions.CreateOptions">
+            <summary>
+            Called to create additional options. After the options in this class have been
+            read from the data file, but before the dialog is shown, this method will be
+            invoked. Each return value must be of a type that implements IOptionsEntry.
+            
+            The options will be sorted and categorized normally as if they were present at the
+            end of the property list in a regular options class.
+            
+            This method can be an enumerator using code like
+            yield return new MyOptionsHandler();
+            </summary>
+            <returns>The custom options to implement.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Options.IOptions.OnOptionsChanged">
+            <summary>
+            Called when options are written to the file. The current object will have the same
+            values as the data that was just written to the file. This call happens after the
+            options have been stored to disk, but before any restart required dialog is shown
+            (if [RestartRequired] is also on this class).
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Options.IOptionsEntry">
+            <summary>
+            All options handlers, including user dynamic option handlers, implement this type.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.IOptionsEntry.CreateUIEntry(PeterHan.PLib.UI.PGridPanel,System.Int32@)">
+            <summary>
+            Creates UI components that will present this option.
+            </summary>
+            <param name="parent">The parent panel where the components should be added.</param>
+            <param name="row">The row index where the component should be placed. If multiple
+            rows of components are added, increment this value for each additional row.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.IOptionsEntry.ReadFrom(System.Object)">
+            <summary>
+            Reads the option value into the UI from the provided settings object.
+            </summary>
+            <param name="settings">The settings object.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.IOptionsEntry.WriteTo(System.Object)">
+            <summary>
+            Writes the option value from the UI into the provided settings object.
+            </summary>
+            <param name="settings">The settings object.</param>
+        </member>
+        <member name="T:PeterHan.PLib.Options.IOptionSpec">
+            <summary>
+            The common parent of all classes that can specify the user visible attributes of an
+            option.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.IOptionSpec.Category">
+            <summary>
+            The option category. Ignored and replaced with the parent option's category if
+            this option is part of a custom grouped type.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.IOptionSpec.Format">
+            <summary>
+            The format string to use when displaying this option value. Only applicable for
+            some types of options.
+            
+            <b>Warning</b>: Attribute may have issues on nested classes that are used as custom
+            grouped options. To mitigate, try declaring the custom class in a non-nested
+            context (i.e. not declared inside another class).
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.IOptionSpec.Title">
+            <summary>
+            The option title. Ignored for fields which are displayed as custom grouped types
+            types of other options.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.IOptionSpec.Tooltip">
+            <summary>
+            The option description tooltip. Ignored for fields which are displayed as custom
+            grouped types of other options.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Options.LimitAttribute">
+            <summary>
+            An attribute placed on an option field for a property used as mod options to define
+            minimum and maximum acceptable values.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.LimitAttribute.Maximum">
+            <summary>
+            The maximum value (inclusive).
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.LimitAttribute.Minimum">
+            <summary>
+            The minimum value (inclusive).
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.LimitAttribute.ClampToRange(System.Single)">
+            <summary>
+            Clamps the specified value to the range of this Limits object.
+            </summary>
+            <param name="value">The value to coerce.</param>
+            <returns>The nearest value included by these limits to the specified value.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Options.LimitAttribute.ClampToRange(System.Int32)">
+            <summary>
+            Clamps the specified value to the range of this Limits object.
+            </summary>
+            <param name="value">The value to coerce.</param>
+            <returns>The nearest value included by these limits to the specified value.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Options.LimitAttribute.InRange(System.Double)">
+            <summary>
+            Reports whether a value is in the range included in these limits.
+            </summary>
+            <param name="value">The value to check.</param>
+            <returns>true if it is included in the limits, or false otherwise.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.Options.ModDialogInfo">
+            <summary>
+            Stores the information displayed about a mod in its options dialog.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.ModDialogInfo.GetModVersionText(System.Type)">
+            <summary>
+            Gets the text shown for a mod's version.
+            </summary>
+            <param name="optionsType">The type used for the mod settings.</param>
+            <returns>The mod version description.</returns>
+        </member>
+        <member name="P:PeterHan.PLib.Options.ModDialogInfo.Image">
+            <summary>
+            The path to the image displayed (on the file system) for this mod.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.ModDialogInfo.Title">
+            <summary>
+            The mod title. The title is taken directly from the mod version information.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.ModDialogInfo.URL">
+            <summary>
+            The URL which will be displayed. If none was provided, the Steam workshop page URL
+            will be reported for Steam mods, and an empty string for local/dev mods.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.ModDialogInfo.Version">
+            <summary>
+            The mod version.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Options.ModInfoAttribute">
+            <summary>
+            Allows mod authors to specify attributes for their mods to be shown in the Options
+            dialog.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.ModInfoAttribute.ForceCollapseCategories">
+            <summary>
+            If true, forces all categories in the options screen to begin collapsed (except
+            the default category).
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.ModInfoAttribute.Image">
+            <summary>
+            The name of the image file (in the mod's root directory) to display in the options
+            dialog. If null or empty (or it cannot be loaded), no image is displayed.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.ModInfoAttribute.URL">
+            <summary>
+            The URL to use for the mod. If null or empty, the Steam workshop link will be used
+            if possible, or otherwise the button will not be shown.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Options.NullableFloatOptionsEntry">
+            <summary>
+            An options entry which represents float? and displays a text field and slider.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.NullableFloatOptionsEntry.FieldText">
+            <summary>
+            The text that is rendered for the current value of the entry.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.NullableFloatOptionsEntry.textField">
+            <summary>
+            The realized text field.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.NullableFloatOptionsEntry.value">
+            <summary>
+            The value in the text field.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.NullableFloatOptionsEntry.OnSliderChanged(UnityEngine.GameObject,System.Single)">
+            <summary>
+            Called when the slider's value is changed.
+            </summary>
+            <param name="newValue">The new slider value.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.NullableFloatOptionsEntry.OnTextChanged(UnityEngine.GameObject,System.String)">
+            <summary>
+            Called when the input field's text is changed.
+            </summary>
+            <param name="text">The new text.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.NullableFloatOptionsEntry.Update">
+            <summary>
+            Updates the displayed value.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Options.NullableIntOptionsEntry">
+            <summary>
+            An options entry which represents int? and displays a text field and slider.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.NullableIntOptionsEntry.FieldText">
+            <summary>
+            The text that is rendered for the current value of the entry.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.NullableIntOptionsEntry.textField">
+            <summary>
+            The realized text field.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.NullableIntOptionsEntry.value">
+            <summary>
+            The value in the text field.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.NullableIntOptionsEntry.OnSliderChanged(UnityEngine.GameObject,System.Single)">
+            <summary>
+            Called when the slider's value is changed.
+            </summary>
+            <param name="newValue">The new slider value.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.NullableIntOptionsEntry.OnTextChanged(UnityEngine.GameObject,System.String)">
+            <summary>
+            Called when the input field's text is changed.
+            </summary>
+            <param name="text">The new text.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.NullableIntOptionsEntry.Update">
+            <summary>
+            Updates the displayed value.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Options.OptionAttribute">
+            <summary>
+            An attribute placed on an option property or enum value for a class used as mod options
+            in order to denote the display title and other options.
+            
+            Options attributes will be recursively searched if a custom type is used for a property
+            with this attribute. If fields in that type have Option attributes, they will be
+            displayed under the category of their parent option (ignoring their own category
+            declaration).
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.OptionAttribute.#ctor">
+            <summary>
+            Denotes a mod option field. Can also be used on members of an Enum type to give
+            them a friendly display name.
+            
+            This overload will take the option strings from STRINGS, using the namespace of the
+            declaring type and the name of the property. A type declared in the MyName.
+            MyNamespace namespace with a property named TestProperty will get the title
+            STRINGS.MYNAME.MYNAMESPACE.OPTIONS.TESTPROPERTY.NAME, the tooltip
+            STRINGS.MYNAME.MYNAMESPACE.OPTIONS.TESTPROPERTY.TOOLTIP, and the category
+            STRINGS.MYNAME.MYNAMESPACE.OPTIONS.TESTPROPERTY.CATEGORY.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.OptionAttribute.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Denotes a mod option field. Can also be used on members of an Enum type to give
+            them a friendly display name.
+            </summary>
+            <param name="title">The field title to display.</param>
+            <param name="tooltip">The tool tip for the field.</param>
+            <param name="category">The category to use, or null for the default category.</param>
+        </member>
+        <member name="T:PeterHan.PLib.Options.OptionsDialog">
+            <summary>
+            A dialog for handling mod options events.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.OptionsDialog.CATEGORY_TITLE_COLOR">
+            <summary>
+            The color of option category titles.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.OptionsDialog.CATEGORY_TITLE_STYLE">
+            <summary>
+            The text style applied to option category titles.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.OptionsDialog.CATEGORY_MARGIN">
+            <summary>
+            The margins inside the colored boxes in each config section.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.OptionsDialog.MOD_IMAGE_SIZE">
+            <summary>
+            The size of the mod preview image displayed.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.OptionsDialog.OUTER_MARGIN">
+            <summary>
+            The margins between the dialog edge and the colored boxes in each config section.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.OptionsDialog.SETTINGS_DIALOG_SIZE">
+            <summary>
+            The default size of the Mod Settings dialog.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.OptionsDialog.SETTINGS_DIALOG_MAX_SIZE">
+            <summary>
+            The maximum size of the Mod Settings dialog before it gets scroll bars.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.OptionsDialog.TOGGLE_SIZE">
+            <summary>
+            The size of the toggle button on each (non-default) config section.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.OptionsDialog.CreateOptions(System.Type)">
+            <summary>
+            Creates an options object using the default constructor if possible.
+            </summary>
+            <param name="type">The type of the object to create.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.OptionsDialog.SaveAndRestart">
+            <summary>
+            Saves the mod enabled settings and restarts the game.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.OptionsDialog.collapseCategories">
+            <summary>
+            If true, all categories begin collapsed.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.OptionsDialog.configAttr">
+            <summary>
+            The config file attribute for the options type, if present.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.OptionsDialog.dialog">
+            <summary>
+            The currently active dialog.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.OptionsDialog.modImage">
+            <summary>
+            The sprite to display for this mod.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.OptionsDialog.displayInfo">
+            <summary>
+            Collects information from the ModInfoAttribute and KMod.Mod objects for display.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.OptionsDialog.OnClose">
+            <summary>
+            The event to invoke when the dialog is closed.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.OptionsDialog.optionCategories">
+            <summary>
+            The option entries in the dialog.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.OptionsDialog.options">
+            <summary>
+            The options read from the config. It might contain hidden options so preserve its
+            contents here.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.OptionsDialog.optionsType">
+            <summary>
+            The type used to determine which options are visible.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.OptionsDialog.AddCategoryHeader(PeterHan.PLib.UI.PGridPanel,System.String,PeterHan.PLib.UI.PGridPanel)">
+            <summary>
+            Adds a category header to the dialog.
+            </summary>
+            <param name="container">The parent of the header.</param>
+            <param name="category">The header title.</param>
+            <param name="contents">The panel containing the options in this category.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.OptionsDialog.AddModInfoScreen(PeterHan.PLib.UI.PDialog)">
+            <summary>
+            Fills in the mod info screen, assuming that infoAttr is non-null.
+            </summary>
+            <param name="dialog">The dialog to populate.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.OptionsDialog.CheckForRestart">
+            <summary>
+            Checks the mod config class for the [RestartRequired] attribute, and brings up a
+            restart dialog if necessary.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.OptionsDialog.CloseDialog">
+            <summary>
+            Closes the current dialog.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.OptionsDialog.FillModOptions(PeterHan.PLib.UI.PDialog)">
+            <summary>
+            Fills in the actual mod option fields.
+            </summary>
+            <param name="dialog">The dialog to populate.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.OptionsDialog.OnManualConfig(UnityEngine.GameObject)">
+            <summary>
+            Invoked when the manual config button is pressed.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.OptionsDialog.OnOptionsSelected(System.String)">
+            <summary>
+            Invoked when the dialog is closed.
+            </summary>
+            <param name="action">The action key taken.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.OptionsDialog.OnResetConfig(UnityEngine.GameObject)">
+            <summary>
+            Invoked when the reset to default button is pressed.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.OptionsDialog.ShowDialog">
+            <summary>
+            Triggered when the Mod Options button is clicked.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.OptionsDialog.TriggerUpdateOptions(System.Object)">
+            <summary>
+            Calls the user OnOptionsChanged handler if present.
+            </summary>
+            <param name="newOptions">The updated options object.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.OptionsDialog.UpdateOptions">
+            <summary>
+            Updates the dialog with the latest options from the file.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.OptionsDialog.VisitModHomepage(UnityEngine.GameObject)">
+            <summary>
+            If configured, opens the mod's home page in the default browser.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.OptionsDialog.WriteOptions">
+            <summary>
+            Writes the mod options to its config file.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Options.OptionsEntry">
+            <summary>
+            An abstract parent class containing methods shared by all built-in options handlers.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.OptionsEntry.CONTROL_MARGIN">
+            <summary>
+            The margins around the control used in each entry.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.OptionsEntry.LABEL_MARGIN">
+            <summary>
+            The margins around the label for each entry.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.OptionsEntry.AddToCategory(System.Collections.Generic.IDictionary{System.String,System.Collections.Generic.ICollection{PeterHan.PLib.Options.IOptionsEntry}},PeterHan.PLib.Options.IOptionsEntry)">
+            <summary>
+            Adds an options entry to the category list, creating a new category if necessary.
+            </summary>
+            <param name="entries">The existing categories.</param>
+            <param name="entry">The option entry to add.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.OptionsEntry.BuildOptions(System.Type)">
+            <summary>
+            Builds the options entries from the type.
+            </summary>
+            <param name="forType">The type of the options class.</param>
+            <returns>A list of all public properties annotated for options dialogs.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Options.OptionsEntry.CreateDefaultUIEntry(PeterHan.PLib.Options.IOptionsEntry,PeterHan.PLib.UI.PGridPanel,System.Int32,PeterHan.PLib.UI.IUIComponent)">
+            <summary>
+            Creates a default UI entry. This entry will have the title and tool tip in the
+            first column, and the provided UI component in the second column. Only one row is
+            added by this method.
+            </summary>
+            <param name="entry">The options entry to be presented.</param>
+            <param name="parent">The parent where the components will be added.</param>
+            <param name="row">The row index where the components will be added.</param>
+            <param name="presenter">The presenter that can display this option's value.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.OptionsEntry.FindOptionClass(PeterHan.PLib.Options.IOptionSpec,System.Reflection.PropertyInfo)">
+            <summary>
+            Creates an options entry wrapper for the specified property.
+            </summary>
+            <param name="info">The property to wrap.</param>
+            <param name="spec">The option title and tool tip.</param>
+            <returns>An options wrapper, or null if none can handle this type.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Options.OptionsEntry.HandleDefaults(PeterHan.PLib.Options.IOptionSpec,System.Reflection.MemberInfo)">
+            <summary>
+            Substitutes default strings for an options entry with an empty title.
+            </summary>
+            <param name="spec">The option attribute supplied (Format is still accepted!)</param>
+            <param name="member">The item declaring the attribute.</param>
+            <returns>A substitute attribute with default values from STRINGS.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Options.OptionsEntry.LookInStrings(System.String)">
+            <summary>
+            First looks to see if the string exists in the string database; if it does, returns
+            the localized value, otherwise returns the string unmodified.
+            
+            This method is somewhat slow. Cache the result if possible.
+            </summary>
+            <param name="keyOrValue">The string key to check.</param>
+            <returns>The string value with that key, or the key if there is no such localized
+            string value.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Options.OptionsEntry.TryCreateEntry(System.Reflection.PropertyInfo,System.Int32)">
+            <summary>
+            Shared code to create an options entry if an [Option] attribute is found on a
+            property.
+            </summary>
+            <param name="prop">The property to inspect.</param>
+            <param name="depth">The current depth of iteration to avoid infinite loops.</param>
+            <returns>The OptionsEntry created, or null if none was.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Options.OptionsEntry.TryCreateEntry(System.Attribute,System.Reflection.PropertyInfo,System.Int32)">
+            <summary>
+            Creates an options entry if an attribute is a valid IOptionSpec or
+            DynamicOptionAttribute.
+            </summary>
+            <param name="attribute">The attribute to parse.</param>
+            <param name="prop">The property to inspect.</param>
+            <param name="depth">The current depth of iteration to avoid infinite loops.</param>
+            <returns>The OptionsEntry created from the attribute, or null if none was.</returns>
+        </member>
+        <member name="P:PeterHan.PLib.Options.OptionsEntry.Category">
+            <summary>
+            The category for this entry.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.OptionsEntry.Field">
+            <summary>
+            The option field name.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.OptionsEntry.Format">
+            <summary>
+            The format string to use when rendering this option, or null if none was supplied.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.OptionsEntry.Title">
+            <summary>
+            The option title on screen.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.OptionsEntry.Tooltip">
+            <summary>
+            The tool tip to display.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.OptionsEntry.Value">
+            <summary>
+            The current value selected by the user.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.OptionsEntry.CreateUIEntry(PeterHan.PLib.UI.PGridPanel,System.Int32@)">
+            <summary>
+            Adds the line item entry for this options entry.
+            </summary>
+            <param name="parent">The location to add this entry.</param>
+            <param name="row">The layout row index to use. If updated, the row index will
+            continue to count up from the new value.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.OptionsEntry.GetUIComponent">
+            <summary>
+            Retrieves the UI component which can alter this setting. It should be sized
+            properly to display any of the valid settings. The actual value will be set after
+            the component is realized.
+            </summary>
+            <returns>The UI component to display.</returns>
+        </member>
+        <member name="T:PeterHan.PLib.Options.POptions">
+            <summary>
+            Adds an "Options" screen to a mod in the Mods menu.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.POptions.CONFIG_FILE_NAME">
+            <summary>
+            The configuration file name used by default for classes that do not specify
+            otherwise. This file name is case sensitive.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.POptions.MAX_SERIALIZATION_DEPTH">
+            <summary>
+            The maximum nested class depth which will be serialized in mod options to avoid
+            infinite loops.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.POptions.OPTION_BUTTON_MARGIN">
+            <summary>
+            The margins around the Options button.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.POptions.SHARED_CONFIG_FOLDER">
+            <summary>
+            The shared mod configuration folder, which works between archived versions and
+            local/dev/Steam.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.POptions.VERSION">
+            <summary>
+            The version of this component. Uses the running PLib version.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.POptions.Instance">
+            <summary>
+            The instantiated copy of this class.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.POptions.BuildDisplay_Postfix(UnityEngine.GameObject,System.Collections.IEnumerable)">
+            <summary>
+            Applied to ModsScreen if mod options are registered, after BuildDisplay runs.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.POptions.GetConfigFilePath(System.Type)">
+            <summary>
+            Retrieves the configuration file path used by PLib Options for a specified type.
+            </summary>
+            <param name="optionsType">The options type stored in the config file.</param>
+            <returns>The path to the configuration file that will be used by PLib for that
+            mod's config.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Options.POptions.GetModFromType(System.Type)">
+            <summary>
+            Attempts to find the mod which owns the specified type.
+            </summary>
+            <param name="optionsType">The type to look up.</param>
+            <returns>The Mod that owns it, or null if no owning mod could be found, such as for
+            types in System or Assembly-CSharp.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Options.POptions.GetConfigPath(PeterHan.PLib.Options.ConfigFileAttribute,System.Reflection.Assembly)">
+            <summary>
+            Retrieves the configuration file path used by PLib Options for a specified type.
+            </summary>
+            <param name="attr">The config file attribute for that type.</param>
+            <param name="modAssembly">The assembly to use for determining the path.</param>
+            <returns>The path to the configuration file that will be used by PLib for that
+            mod's config.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Options.POptions.ReadSettings``1">
+            <summary>
+            Reads a mod's settings from its configuration file. The assembly defining T is used
+            to resolve the proper settings folder.
+            </summary>
+            <typeparam name="T">The type of the settings object.</typeparam>
+            <returns>The settings read, or null if they could not be read (e.g. newly installed).</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Options.POptions.ReadSettings(System.String,System.Type)">
+            <summary>
+            Reads a mod's settings from its configuration file.
+            </summary>
+            <param name="path">The path to the settings file.</param>
+            <param name="optionsType">The options type.</param>
+            <returns>The settings read, or null if they could not be read (e.g. newly installed)</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Options.POptions.ShowDialog(System.Type,System.Action{System.Object})">
+            <summary>
+            Shows a mod options dialog now, as if Options was used inside the Mods menu.
+            </summary>
+            <param name="optionsType">The type of the options to show. The mod to configure,
+            configuration directory, and so forth will be retrieved from the provided type.
+            This type must be the same type configured in RegisterOptions for the mod.</param>
+            <param name="onClose">The method to call when the dialog is closed.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.POptions.WriteSettings``1(``0)">
+            <summary>
+            Writes a mod's settings to its configuration file. The assembly defining T is used
+            to resolve the proper settings folder.
+            </summary>
+            <typeparam name="T">The type of the settings object.</typeparam>
+            <param name="settings">The settings to write.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.POptions.WriteSettings(System.Object,System.String,System.Boolean)">
+            <summary>
+            Writes a mod's settings to its configuration file.
+            </summary>
+            <param name="settings">The settings to write.</param>
+            <param name="path">The path to the settings file.</param>
+            <param name="indent">true to indent the output, or false to leave it in one line.</param>
+        </member>
+        <member name="F:PeterHan.PLib.Options.POptions.modOptions">
+            <summary>
+            Maps mod static IDs to their options.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.POptions.registered">
+            <summary>
+            Maps mod assemblies to handlers that can fire their options. Only populated in
+            the instantiated copy of POptions.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.POptions.AddModOptions(System.Object,System.Int32,UnityEngine.GameObject)">
+            <summary>
+            Adds the Options button to the Mods screen.
+            </summary>
+            <param name="modEntry">The mod entry where the button should be added.</param>
+            <param name="fallbackIndex">The index to use if it cannot be determined from the entry.</param>
+            <param name="parent">The parent where the entries were added, used only if the
+            fallback index is required.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.POptions.Initialize(HarmonyLib.Harmony)">
+            <summary>
+            Initializes and stores the options table for quicker lookups later.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.POptions.RegisterOptions(KMod.UserMod2,System.Type)">
+            <summary>
+            Registers a class as a mod options class. The type is registered for the mod
+            instance specified, which is easily available in OnLoad.
+            </summary>
+            <param name="mod">The mod for which the type will be registered.</param>
+            <param name="optionsType">The class which will represent the options for this mod.</param>
+        </member>
+        <member name="T:PeterHan.PLib.Options.POptions.ModOptionsHandler">
+            <summary>
+            Opens the mod options dialog for a specific mod assembly.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.POptions.ModOptionsHandler.forType">
+            <summary>
+            The type whose options will be shown.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.POptions.ModOptionsHandler.options">
+            <summary>
+            The options instance that will handle the dialog.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.POptions.ModOptionsHandler.ShowDialog(UnityEngine.GameObject)">
+            <summary>
+            Shows the options dialog.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Options.POptions.OpenDialogArgs">
+            <summary>
+            The arguments to be passed with message SHOW_DIALOG_MOD.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.POptions.OpenDialogArgs.OnClose">
+            <summary>
+            The handler (if not null) to be called when the dialog is closed.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.POptions.OpenDialogArgs.OptionsType">
+            <summary>
+            The mod options type to show.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Options.RestartRequiredAttribute">
+            <summary>
+            An empty marker attribute. If applied to an options class, PLib will notify the user
+            that the game must be restarted to apply the options. This attribute will not work if
+            it is applied to an individual option, only if applied to the class as a whole.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Options.SelectOneOptionsEntry">
+            <summary>
+            An options entry which represents Enum and displays a spinner with text options.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.SelectOneOptionsEntry.GetAttribute(System.Object,System.Type)">
+            <summary>
+            Obtains the title and tool tip for an enumeration value.
+            </summary>
+            <param name="enumValue">The value in the enumeration.</param>
+            <param name="fieldType">The type of the Enum field.</param>
+            <returns>The matching Option</returns>
+        </member>
+        <member name="F:PeterHan.PLib.Options.SelectOneOptionsEntry.chosen">
+            <summary>
+            The chosen item in the array.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.SelectOneOptionsEntry.comboBox">
+            <summary>
+            The realized item label.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.SelectOneOptionsEntry.options">
+            <summary>
+            The available options to cycle through.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.SelectOneOptionsEntry.Update">
+            <summary>
+            Updates the displayed text to match the current item.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.SelectOneOptionsEntry.UpdateValue(UnityEngine.GameObject,PeterHan.PLib.Options.SelectOneOptionsEntry.EnumOption)">
+            <summary>
+            Triggered when the value chosen from the combo box has been changed.
+            </summary>
+            <param name="selected">The value selected by the user.</param>
+        </member>
+        <member name="T:PeterHan.PLib.Options.SelectOneOptionsEntry.EnumOption">
+            <summary>
+            Represents a selectable option.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.SelectOneOptionsEntry.EnumOption.Title">
+            <summary>
+            The option title.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.SelectOneOptionsEntry.EnumOption.ToolTip">
+            <summary>
+            The option tool tip.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.SelectOneOptionsEntry.EnumOption.Value">
+            <summary>
+            The value to assign if this option is chosen.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Options.SingletonOptions`1">
+            <summary>
+            A class which can be used by mods to maintain a singleton of their options. This
+            class should be the superclass of the mod options class, and &lt;T&gt; should be
+            the type of the options class to store.
+            
+            This class only initializes the mod options once by default. If the settings can
+            be updated without restarting the game, update the Instance manually using
+            IOptions.OnOptionsChanged. If the game has to be restarted anyways, add
+            [RestartRequired].
+            </summary>
+            <typeparam name="T">The mod options class to wrap.</typeparam>
+        </member>
+        <member name="F:PeterHan.PLib.Options.SingletonOptions`1.instance">
+            <summary>
+            The only instance of the singleton options.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.Options.SingletonOptions`1.Instance">
+            <summary>
+            Retrieves the program options, or lazily initializes them if not yet loaded.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Options.SlidingBaseOptionsEntry">
+            <summary>
+            An options entry which displays a slider below it.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.SlidingBaseOptionsEntry.ENTRY_MARGIN">
+            <summary>
+            The margin between the slider extra row and the rest of the dialog.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.SlidingBaseOptionsEntry.SLIDER_MARGIN">
+            <summary>
+            The margin between the slider and its labels.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.SlidingBaseOptionsEntry.limits">
+            <summary>
+            The limits allowed for the entry.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.SlidingBaseOptionsEntry.slider">
+            <summary>
+            The realized slider.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.SlidingBaseOptionsEntry.GetSlider">
+            <summary>
+            Gets the initialized PLib slider to be used for value display.
+            </summary>
+            <returns>The slider to be used.</returns>
+        </member>
+        <member name="M:PeterHan.PLib.Options.SlidingBaseOptionsEntry.OnRealizeSlider(UnityEngine.GameObject)">
+            <summary>
+            Called when the slider is realized.
+            </summary>
+            <param name="realized">The actual slider.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.SlidingBaseOptionsEntry.Update">
+            <summary>
+            Updates the displayed value.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Options.StringOptionsEntry">
+            <summary>
+            An options entry which represents a string and displays a text field.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.StringOptionsEntry.maxLength">
+            <summary>
+            The maximum entry length.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.StringOptionsEntry.textField">
+            <summary>
+            The realized text field.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.StringOptionsEntry.value">
+            <summary>
+            The value in the text field.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.Options.StringOptionsEntry.OnTextChanged(UnityEngine.GameObject,System.String)">
+            <summary>
+            Called when the input field's text is changed.
+            </summary>
+            <param name="text">The new text.</param>
+        </member>
+        <member name="M:PeterHan.PLib.Options.StringOptionsEntry.Update">
+            <summary>
+            Updates the displayed value.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.Options.TextBlockOptionsEntry">
+            <summary>
+            An options entry that displays static text. Not intended to be serializable to the
+            options file, instead declare a read-only property that returns null with a type of
+            LocText, e.g:
+            
+            [Option("Your text goes here", "Tool tip for the text")]
+            public LocText MyLabel => null;
+            
+            Unity font formatting can be used in the text. The name of a strings table entry can
+            also be used to allow localization.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.TextBlockOptionsEntry.WRAP_TEXT_STYLE">
+            <summary>
+            A font style that looks like TextLightStyle but allows word wrapping.
+            </summary>
+        </member>
+        <member name="F:PeterHan.PLib.Options.TextBlockOptionsEntry.ignore">
+            <summary>
+            This value is not used, it only exists to satisfy the contract.
+            </summary>
+        </member>
+        <member name="T:PeterHan.PLib.DynamicOptionAttribute">
+            <summary>
+            An attribute placed on an option property for a class used as mod options in order to
+            make PLib use a custom options handler. The type used for the handler must inherit
+            from IOptionsEntry.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.DynamicOptionAttribute.Category">
+            <summary>
+            The option category.
+            </summary>
+        </member>
+        <member name="P:PeterHan.PLib.DynamicOptionAttribute.Handler">
+            <summary>
+            The option handler.
+            </summary>
+        </member>
+        <member name="M:PeterHan.PLib.DynamicOptionAttribute.#ctor(System.Type,System.String)">
+            <summary>
+            Denotes a mod option field.
+            </summary>
+            <param name="type">The type that will handle this dynamic option.</param>
+            <param name="category">The category to use, or null for the default category.</param>
+        </member>
+    </members>
+</doc>
