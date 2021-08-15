@@ -46,9 +46,12 @@ namespace SuperGeyser2
                     }else if (__result[index].geyserType.id == "filthy_water")
                     {
                         __result[index].geyserType.temperature = 263.15f;
+                    }else if (__result[index].geyserType.id == "steam")
+                    {
+                        __result[index].geyserType.temperature = 293.15f;
                     }
 
-        }
+                }
 
 
 
