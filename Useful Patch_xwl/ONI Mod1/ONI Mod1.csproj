@@ -85,6 +85,7 @@
     <Compile Include="LiquidHeater.cs" />
     <Compile Include="MassageTable_ReduceStress.cs" />
     <Compile Include="MassiveHeatSink.cs" />
+    <Compile Include="MolecularForgePatches.cs" />
     <Compile Include="OilRefinery_x5.cs" />
     <Compile Include="OilWellCap_x10.cs" />
     <Compile Include="ONI.cs" />
